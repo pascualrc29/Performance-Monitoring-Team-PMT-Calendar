@@ -26,6 +26,10 @@ Across all of them:
 - **Open any activity** for its schedule, duration, responsible units, expected
   output, agenda notes, and one-click *Add to Google Calendar* or `.ics`
   download.
+- **Refresh** re-reads the published schedule without reloading the page, and
+  says what changed — or that nothing did. See
+  [Refreshing the schedule](#refreshing-the-schedule) for what it can and
+  cannot reach.
 - **Export** what is on screen as `.ics` or `.csv`, or print it (the print
   stylesheet drops the chrome and keeps the schedule).
 - **Share a link.** The view, month, zoom, grouping and every filter live in the
@@ -83,6 +87,26 @@ That script:
 `.github/workflows/refresh-calendar.yml` runs this twice a day and commits the
 snapshot when the calendar changes, so the published site follows the Google
 Calendar without anyone touching the code.
+
+### Refreshing the schedule
+
+There are two different refreshes, and it is worth keeping them apart:
+
+| | What it does | How to run it |
+| --- | --- | --- |
+| **Refresh** (in the page) | Re-reads `data/events.json` past any browser or CDN cache, re-renders the current view, and reports what changed. It does **not** talk to Google. | The **Refresh** button in the toolbar |
+| **Google → snapshot** | Re-reads the Google Calendar feed and commits a new `data/events.json`. | Automatic, twice a day; or **Actions → Refresh calendar data → Run workflow** to do it now |
+
+So: after editing the Google Calendar, run the workflow (or wait for the next
+scheduled run), then hit **Refresh** in the page to pick it up. Hitting Refresh
+on its own tells you the snapshot has not moved, which is the honest answer —
+the browser cannot read the Google feed directly, because that endpoint sends no
+CORS headers.
+
+The in-page refresh keeps your current view, month, zoom and search, and drops
+only a stage or unit filter whose value no longer exists in the new data, so a
+removed activity cannot leave you staring at an empty calendar. If the fetch
+fails, the schedule on screen is left exactly as it was and the page says so.
 
 ### Adding or changing activities
 

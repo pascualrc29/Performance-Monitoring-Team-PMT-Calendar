@@ -15,8 +15,15 @@ export const LIFECYCLE_LABEL = {
   upcoming: "Upcoming",
 };
 
-export async function loadCalendar() {
-  const response = await fetch(DATA_URL, { cache: "no-cache" });
+/**
+ * @param {{bust?: boolean}} [options] `bust` defeats any CDN or browser cache,
+ *   for the manual refresh — GitHub Pages will otherwise happily serve the
+ *   previous snapshot.
+ */
+export async function loadCalendar({ bust = false } = {}) {
+  const url = new URL(DATA_URL);
+  if (bust) url.searchParams.set("t", String(Date.now()));
+  const response = await fetch(url, { cache: bust ? "reload" : "no-cache" });
   if (!response.ok) {
     throw new Error(`Could not load calendar data (HTTP ${response.status})`);
   }

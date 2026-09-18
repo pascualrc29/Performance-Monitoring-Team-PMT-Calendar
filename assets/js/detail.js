@@ -14,6 +14,7 @@ const FOCUSABLE =
 export function createDetailDrawer({ root, calendar, categoryById, today, onClose }) {
   let lastFocused = null;
   let currentEvent = null;
+  let context = { calendar, categoryById, today };
 
   const backdrop = document.createElement("div");
   backdrop.className = "drawer__backdrop";
@@ -53,7 +54,7 @@ export function createDetailDrawer({ root, calendar, categoryById, today, onClos
   function open(event) {
     currentEvent = event;
     lastFocused = document.activeElement;
-    panel.innerHTML = template(event, { calendar, categoryById, today });
+    panel.innerHTML = template(event, context);
     panel.hidden = false;
     backdrop.hidden = false;
     document.body.classList.add("has-drawer");
@@ -67,7 +68,7 @@ export function createDetailDrawer({ root, calendar, categoryById, today, onClos
     panel.querySelector("[data-download-ics]")?.addEventListener("click", () => {
       download(
         `${slug(event.title)}.ics`,
-        toICS([event], calendar, categoryById),
+        toICS([event], context.calendar, context.categoryById),
         "text/calendar",
       );
     });
@@ -90,7 +91,18 @@ export function createDetailDrawer({ root, calendar, categoryById, today, onClos
     onClose?.();
   }
 
-  return { open, close, get isOpen() { return !panel.hidden; }, get event() { return currentEvent; } };
+  /** Point the drawer at a freshly loaded schedule without rebuilding it. */
+  function update(next) {
+    context = { ...context, ...next };
+  }
+
+  return {
+    open,
+    close,
+    update,
+    get isOpen() { return !panel.hidden; },
+    get event() { return currentEvent; },
+  };
 }
 
 function template(event, { calendar, categoryById, today }) {

@@ -418,6 +418,29 @@ svg {
   display: block;
 }
 
+/* The icon spins only while a refresh is in flight. */
+.btn--refresh.is-busy {
+  color: var(--text-muted);
+  cursor: progress;
+}
+
+.btn--refresh.is-busy .btn__icon--spin {
+  animation: spin 900ms linear infinite;
+}
+
+@keyframes spin {
+  to {
+    rotate: 360deg;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .btn--refresh.is-busy .btn__icon--spin {
+    animation: none;
+    opacity: 0.5;
+  }
+}
+
 .badge {
   display: inline-grid;
   place-items: center;
@@ -920,6 +943,48 @@ svg {
 
 :root[data-theme="dark"] .pill--upcoming {
   color: color-mix(in oklab, var(--brand-yellow) 78%, #fff);
+}
+
+/* --------------------------------------------------------------- toast */
+
+.toast {
+  position: fixed;
+  left: 50%;
+  bottom: 24px;
+  z-index: 45;
+  display: grid;
+  gap: 2px;
+  max-width: min(420px, calc(100vw - 32px));
+  padding: 11px 16px;
+  border: 1px solid var(--border);
+  border-left: 3px solid var(--brand-blue);
+  border-radius: var(--radius);
+  background: var(--surface);
+  box-shadow: var(--shadow);
+  translate: -50% 12px;
+  opacity: 0;
+  /* It only ever reports; it must never intercept a click on the page beneath. */
+  pointer-events: none;
+  transition: translate 180ms ease, opacity 180ms ease;
+}
+
+.toast.is-open {
+  translate: -50% 0;
+  opacity: 1;
+}
+
+.toast--error {
+  border-left-color: var(--today);
+}
+
+.toast__title {
+  font-size: 13.5px;
+  font-weight: 650;
+}
+
+.toast__detail {
+  font-size: 12.5px;
+  color: var(--text-secondary);
 }
 
 /* --------------------------------------------------------------- notices */
@@ -2260,6 +2325,7 @@ kbd {
   .legendwrap__hint,
   .drawer,
   .drawer__backdrop,
+  .toast,
   .week__more {
     display: none !important;
   }

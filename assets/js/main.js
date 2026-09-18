@@ -32,6 +32,9 @@ const $ = (selector, scope = document) => scope.querySelector(selector);
 let data = null;
 let drawer = null;
 let state = null;
+/** Fingerprint of the loaded schedule, so a refresh can say whether it changed. */
+let lastSignature = "";
+let refreshing = false;
 
 /* ---------------------------------------------------------------- *
  * Theme
@@ -162,7 +165,7 @@ async function boot() {
   }
 
   document.documentElement.style.setProperty("--cat-other", "var(--cat-fallback)");
-  injectCategoryColors();
+  lastSignature = signatureOf(data);
 
   state = readHash();
   drawer = createDetailDrawer({
@@ -174,6 +177,7 @@ async function boot() {
 
   $("#app-loading")?.remove();
   buildChrome();
+  applyData();
   render();
   writeHash({ replace: true });
 
@@ -193,7 +197,10 @@ async function boot() {
   });
 }
 
-/** Category colours live in the data file, so publish them as CSS variables. */
+/**
+ * Category colours live in the data file, so publish them as CSS variables.
+ * One reused <style> element, because a refresh calls this again.
+ */
 function injectCategoryColors() {
   const light = [];
   const dark = [];
@@ -201,30 +208,27 @@ function injectCategoryColors() {
     light.push(`--cat-${category.id}: ${category.light};`);
     dark.push(`--cat-${category.id}: ${category.dark};`);
   }
-  const style = document.createElement("style");
+  let style = document.getElementById("category-colors");
+  if (!style) {
+    style = document.createElement("style");
+    style.id = "category-colors";
+    document.head.append(style);
+  }
   style.textContent =
     `:root { ${light.join(" ")} }\n` +
     `@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) { ${dark.join(" ")} } }\n` +
     `:root[data-theme="dark"] { ${dark.join(" ")} }\n`;
-  document.head.append(style);
 }
 
 /* ---------------------------------------------------------------- *
  * Chrome (toolbar, legend, KPIs)
  * ---------------------------------------------------------------- */
 
+/**
+ * Everything here is wired once. Anything that depends on the *contents* of
+ * data/events.json lives in applyData(), which runs again after a refresh.
+ */
 function buildChrome() {
-  const { calendar } = data;
-  $("#calendar-name").textContent = calendar.name;
-  $("#subscribe-link").href = calendar.googleUrl;
-  $("#ics-link").href = calendar.icsUrl;
-  $("#generated-at").textContent = new Date(data.generatedAt).toLocaleString("en-PH", {
-    dateStyle: "medium",
-    timeStyle: "short",
-    timeZone: calendar.timeZone,
-  });
-  $("#today-label").textContent = formatDay(data.today);
-
   /* view switcher */
   const switcher = $("#view-switch");
   switcher.innerHTML = "";
@@ -273,15 +277,8 @@ function buildChrome() {
     search.focus();
   });
 
-  /* unit filter */
+  /* unit filter (options are filled by applyData) */
   const unitSelect = $("#unit-filter");
-  unitSelect.innerHTML = `<option value="">All units</option>`;
-  for (const unit of data.units) {
-    const option = document.createElement("option");
-    option.value = unit;
-    option.textContent = unit;
-    unitSelect.append(option);
-  }
   unitSelect.addEventListener("change", () => {
     setState({ units: unitSelect.value ? new Set([unitSelect.value]) : new Set() });
   });
@@ -303,29 +300,8 @@ function buildChrome() {
     setState({ query: "", categories: new Set(), units: new Set(), lifecycles: new Set() }),
   );
 
-  /* legend / category filter */
-  const legend = $("#legend");
-  legend.innerHTML = "";
-  for (const category of data.categories) {
-    const chip = document.createElement("button");
-    chip.type = "button";
-    chip.className = "chip";
-    chip.dataset.category = category.id;
-    chip.style.setProperty("--series", `var(--cat-${category.id})`);
-    chip.setAttribute("aria-pressed", "false");
-    chip.title = category.description ?? category.label;
-    chip.innerHTML =
-      `<span class="chip__swatch"></span>` +
-      `<span class="chip__label">${category.label}</span>` +
-      `<span class="chip__count">${category.count}</span>`;
-    chip.addEventListener("click", () => {
-      const next = new Set(state.categories);
-      if (next.has(category.id)) next.delete(category.id);
-      else next.add(category.id);
-      setState({ categories: next });
-    });
-    legend.append(chip);
-  }
+  /* refresh */
+  $("#refresh").addEventListener("click", refreshData);
 
   /* exports */
   $("#export-ics").addEventListener("click", () => {
@@ -359,6 +335,66 @@ function buildChrome() {
   });
 
   syncControls();
+}
+
+/**
+ * Renders everything that comes out of data/events.json. Called on boot and
+ * again after a manual refresh, so it must be safe to run repeatedly.
+ */
+function applyData() {
+  const { calendar } = data;
+  injectCategoryColors();
+
+  $("#calendar-name").textContent = calendar.name;
+  $("#subscribe-link").href = calendar.googleUrl;
+  $("#ics-link").href = calendar.icsUrl;
+  $("#today-label").textContent = formatDay(data.today);
+  syncGeneratedAt();
+
+  /* unit filter options */
+  const unitSelect = $("#unit-filter");
+  unitSelect.innerHTML = `<option value="">All units</option>`;
+  for (const unit of data.units) {
+    const option = document.createElement("option");
+    option.value = unit;
+    option.textContent = unit;
+    unitSelect.append(option);
+  }
+
+  /* legend, which doubles as the stage filter */
+  const legend = $("#legend");
+  legend.innerHTML = "";
+  for (const category of data.categories) {
+    const chip = document.createElement("button");
+    chip.type = "button";
+    chip.className = "chip";
+    chip.dataset.category = category.id;
+    chip.style.setProperty("--series", `var(--cat-${category.id})`);
+    chip.setAttribute("aria-pressed", "false");
+    chip.title = category.description ?? category.label;
+    chip.innerHTML =
+      `<span class="chip__swatch"></span>` +
+      `<span class="chip__label">${escapeHtml(category.label)}</span>` +
+      `<span class="chip__count">${category.count}</span>`;
+    chip.addEventListener("click", () => {
+      const next = new Set(state.categories);
+      if (next.has(category.id)) next.delete(category.id);
+      else next.add(category.id);
+      setState({ categories: next });
+    });
+    legend.append(chip);
+  }
+}
+
+function syncGeneratedAt() {
+  const stamp = new Date(data.generatedAt);
+  const node = $("#generated-at");
+  node.dateTime = data.generatedAt;
+  node.textContent = stamp.toLocaleString("en-PH", {
+    dateStyle: "medium",
+    timeStyle: "short",
+    timeZone: data.calendar.timeZone,
+  });
 }
 
 function syncControls() {
@@ -403,6 +439,99 @@ function setState(patch, { replace = false } = {}) {
   writeHash({ replace });
   syncControls();
   render();
+}
+
+/* ---------------------------------------------------------------- *
+ * Manual refresh
+ *
+ * The page can only re-read data/events.json: Google's iCalendar endpoint
+ * sends no CORS headers, so the browser cannot reach the feed itself. The
+ * scheduled workflow is what pulls Google -> events.json; this button picks up
+ * a newer snapshot without a full page reload, and reports honestly when the
+ * snapshot has not moved.
+ * ---------------------------------------------------------------- */
+
+/** Cheap fingerprint of the schedule — enough to tell "changed" from "same". */
+function signatureOf(payload) {
+  return [
+    payload.generatedAt,
+    payload.events.length,
+    ...payload.events.map((event) => `${event.id}:${event.start}:${event.end}:${event.title}`),
+  ].join("|");
+}
+
+async function refreshData() {
+  if (refreshing) return;
+  refreshing = true;
+
+  const button = $("#refresh");
+  button.disabled = true;
+  button.classList.add("is-busy");
+
+  try {
+    const fresh = await loadCalendar({ bust: true });
+    const signature = signatureOf(fresh);
+    const changed = signature !== lastSignature;
+    const before = data.events.length;
+
+    data = fresh;
+    lastSignature = signature;
+
+    // A stage or unit that vanished from the feed must not keep filtering the
+    // view to nothing — drop those selections rather than stranding the user.
+    const categories = new Set(data.categories.map((category) => category.id));
+    const units = new Set(data.units);
+    const keptCategories = new Set([...state.categories].filter((id) => categories.has(id)));
+    const keptUnits = new Set([...state.units].filter((unit) => units.has(unit)));
+
+    drawer.close();
+    drawer.update({
+      calendar: data.calendar,
+      categoryById: data.categoryById,
+      today: data.today,
+    });
+
+    state = { ...state, categories: keptCategories, units: keptUnits };
+    applyData();
+    syncControls();
+    render();
+
+    if (!changed) {
+      toast("Already up to date", "The published schedule has not changed since it was last read.");
+    } else {
+      const delta = data.events.length - before;
+      const detail =
+        delta === 0
+          ? "Activity details were updated."
+          : delta > 0
+            ? `${delta} ${delta === 1 ? "activity" : "activities"} added.`
+            : `${-delta} ${delta === -1 ? "activity" : "activities"} removed.`;
+      toast("Schedule updated", detail);
+    }
+  } catch (error) {
+    toast("Could not refresh", `${error.message}. The schedule on screen is unchanged.`, "error");
+  } finally {
+    refreshing = false;
+    button.disabled = false;
+    button.classList.remove("is-busy");
+  }
+}
+
+let toastTimer = null;
+
+function toast(title, detail, tone = "info") {
+  const host = $("#toast");
+  host.innerHTML =
+    `<span class="toast__title">${escapeHtml(title)}</span>` +
+    `<span class="toast__detail">${escapeHtml(detail)}</span>`;
+  host.className = `toast toast--${tone}`;
+  host.hidden = false;
+  void host.offsetWidth; // start the transition from the closed state
+  host.classList.add("is-open");
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => {
+    host.classList.remove("is-open");
+  }, 5200);
 }
 
 /* ---------------------------------------------------------------- *
