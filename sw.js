@@ -12,9 +12,14 @@
  *   static assets   stale-while-revalidate — instant, then quietly refreshed
  */
 
-const VERSION = "pmt-calendar-v2";
+// __BUILD__ is rewritten with the commit SHA at deploy time, so every deploy
+// gets its own caches and the old ones are dropped on activate. Left as-is for
+// local development.
+const VERSION = "pmt-calendar-__BUILD__";
 const SHELL_CACHE = `${VERSION}-shell`;
 const DATA_CACHE = `${VERSION}-data`;
+// The fonts are served from this origin, so they need no special case — they
+// precache with the rest of the shell.
 
 const SHELL = [
   "./",
@@ -29,6 +34,8 @@ const SHELL = [
   "./assets/js/views/month.js",
   "./assets/js/views/gantt.js",
   "./assets/js/views/list.js",
+  "./assets/fonts/public-sans-variable.woff2",
+  "./assets/fonts/archivo-variable.woff2",
   "./assets/img/bwd-logo.png",
   "./assets/img/bwd-logo-32.png",
   "./assets/img/favicon.ico",
@@ -74,6 +81,7 @@ self.addEventListener("fetch", (event) => {
   if (request.method !== "GET") return;
 
   const url = new URL(request.url);
+
   if (url.origin !== self.location.origin) return;
 
   if (request.mode === "navigate") {

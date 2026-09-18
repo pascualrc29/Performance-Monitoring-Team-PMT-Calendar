@@ -169,6 +169,7 @@ index.html                     page shell and static chrome
 manifest.webmanifest           web app manifest — name, icons, shortcuts
 sw.js                          service worker: offline shell and schedule
 assets/css/styles.css          design tokens, components, print styles
+assets/fonts/                  the two self-hosted variable typefaces
 assets/js/main.js              state, URL-hash routing, filters, KPI strip
 assets/js/pwa.js               install prompt and service-worker lifecycle
 assets/js/store.js             data loading, filtering, lane packing, exports
@@ -182,6 +183,22 @@ data/events.json               the published schedule (generated)
 data/pmt-calendar.ics          raw feed snapshot (generated)
 ```
 
+### A note on the design
+
+**Type.** Two variable faces, self-hosted from `assets/fonts/` rather than
+pulled from a font CDN: **Archivo** for the masthead, headings and figures, and
+**Public Sans** — the typeface of the US Web Design System — for running text.
+Both are SIL OFL 1.1. One file covers every weight, 60 KB for the pair, so there
+is no third-party request on page load and the type survives offline without the
+service worker having to special-case a CDN.
+
+**Hierarchy.** Elevation is spent by role rather than stamped on every block:
+the calendar is the page's subject, so it is the only surface that is lifted.
+The figures along the top are one continuous ribbon divided by hairlines, the
+controls sit flat on the page under a rule, and the stage key reads as a caption
+beneath the calendar. Gold — the seal's yellow — is reserved for *now*: the
+activity running today and today's cell in the grid, and nothing else.
+
 ### A note on the colours
 
 The brand colours are taken from the district seal: navy `#183C90` and yellow
@@ -191,7 +208,7 @@ variables at load.
 
 Both the light and the dark sets were checked with a palette validator on the
 **all-pairs** comparison against the exact chart surfaces this site uses
-(`#F6F8FC` light, `#0E1730` dark). Every stage colour clears the lightness band,
+(`#F4F7FC` light, `#0D1A38` dark). Every stage colour clears the lightness band,
 the chroma floor, 3:1 contrast against its surface, and — the point of the
 exercise — stays separable under protanopia and deuteranopia (worst pair ΔE 10.1
 light / 10.5 dark against a target of 8; worst normal-vision pair 17.8 / 18.3

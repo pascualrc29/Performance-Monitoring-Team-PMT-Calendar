@@ -28,6 +28,22 @@
     <meta property="og:image" content="assets/img/bwd-logo.png" />
     <meta property="og:type" content="website" />
 
+    <!-- Self-hosted: no third-party request on every page load, and the type
+         survives offline without special-casing a font CDN in the worker. -->
+    <link
+      rel="preload"
+      href="assets/fonts/public-sans-variable.woff2"
+      as="font"
+      type="font/woff2"
+      crossorigin
+    />
+    <link
+      rel="preload"
+      href="assets/fonts/archivo-variable.woff2"
+      as="font"
+      type="font/woff2"
+      crossorigin
+    />
     <link rel="stylesheet" href="assets/css/styles.css" />
 
     <script>
@@ -56,12 +72,15 @@
             alt="Baliwag Water District official seal"
           />
           <div class="brand__text">
-            <p class="brand__org">Baliwag Water District <span class="brand__sep">·</span> Baliwag City, Bulacan</p>
-            <h1 class="brand__title" id="calendar-name">Performance Monitoring Team (PMT) Calendar</h1>
+            <p class="brand__org">Baliwag Water District</p>
+            <h1 class="brand__title">
+              <span class="brand__title-full" id="calendar-name">Performance Monitoring Team (PMT) Calendar</span>
+              <span class="brand__title-short">PMT Calendar</span>
+            </h1>
             <p class="brand__sub">
               Strategic Performance Management System cycle
               <span class="brand__sep">·</span>
-              today is <strong id="today-label">—</strong> (Philippine time)
+              <span class="brand__today">today is <strong id="today-label">—</strong></span>
             </p>
           </div>
         </div>
@@ -71,7 +90,7 @@
             <svg class="btn__icon" viewBox="0 0 20 20" aria-hidden="true">
               <path d="M10 3v9m0 0 3.4-3.4M10 12 6.6 8.6M4 15.5h12" />
             </svg>
-            Install
+            <span class="btn__label">Install</span>
           </button>
           <a
             class="btn btn--ghost"
@@ -84,7 +103,7 @@
               <rect x="3" y="4.5" width="14" height="12.5" rx="2" />
               <path d="M3 8.5h14M7 3v3M13 3v3" />
             </svg>
-            Google Calendar
+            <span class="btn__label">Google Calendar</span>
           </a>
           <button
             class="themeswitch"

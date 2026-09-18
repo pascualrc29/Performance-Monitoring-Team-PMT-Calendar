@@ -29,6 +29,14 @@ jobs:
       - name: Check the web app manifest parses
         run: node -e "const m=require('./manifest.webmanifest'); if(!m.icons?.length||!m.start_url) throw new Error('manifest is incomplete'); console.log(m.name+' — '+m.icons.length+' icons')"
 
+      # Stamp the service worker with this commit, so a deploy always lands in a
+      # fresh cache and installed copies pick it up instead of serving the old
+      # shell from disk.
+      - name: Version the service worker
+        run: |
+          sed -i "s/__BUILD__/${GITHUB_SHA::12}/" sw.js
+          grep -n 'const VERSION' sw.js
+
       - uses: actions/configure-pages@v5
 
       # The site is plain HTML, CSS and ES modules — the repository root is the

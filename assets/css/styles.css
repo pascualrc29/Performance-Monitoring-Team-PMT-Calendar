@@ -1,65 +1,108 @@
 /* ==========================================================================
    Performance Monitoring Team (PMT) Calendar — Baliwag Water District
-
-   Colour system
-   -------------
-   Brand: navy #183C90 and yellow #EDE424, taken from the district seal.
-   The six SPMS stage colours are injected at runtime from data/events.json
-   (see main.js → injectCategoryColors) as --cat-<id>. Both the light and the
-   dark sets were validated with the data-viz palette validator on the all-pairs
-   pairlist against these exact surfaces (#F6F8FC light, #0E1730 dark): every
-   check passes, so stage colours stay distinguishable including for protanopia
-   and deuteranopia. Re-validate before changing any of them.
    ========================================================================== */
+
+/* Two variable faces, self-hosted, latin subset — one file covers every weight.
+   Archivo (SIL OFL 1.1) carries the masthead, headings and figures; Public Sans
+   (SIL OFL 1.1), the typeface of the US Web Design System, carries the running
+   text. Both are institutional rather than fashionable, which suits a schedule
+   people read at work. */
+@font-face {
+  font-family: "Public Sans";
+  font-style: normal;
+  font-weight: 100 900;
+  font-display: swap;
+  src: url("../fonts/public-sans-variable.woff2") format("woff2");
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA,
+    U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193,
+    U+2212, U+2215, U+FEFF, U+FFFD;
+}
+
+@font-face {
+  font-family: "Archivo";
+  font-style: normal;
+  font-weight: 100 900;
+  font-stretch: 100%;
+  font-display: swap;
+  src: url("../fonts/archivo-variable.woff2") format("woff2");
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA,
+    U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193,
+    U+2212, U+2215, U+FEFF, U+FFFD;
+}
+
+/* --------------------------------------------------------------- tokens
+
+   Palette, drawn from the district seal:
+     navy   #183C90  structure and the masthead
+     gold   #EDE424  the single accent — reserved for "now"
+     aqua   #37B6E9  the seal's water, used for rules and the masthead motif
+
+   Neutrals are biased cool-blue rather than pure grey, so they read as chosen
+   alongside the navy instead of inherited.
+
+   The six SPMS stage colours are injected at runtime from data/events.json
+   (main.js -> injectCategoryColors). Both sets were validated with the data-viz
+   palette validator on the all-pairs pairlist against the exact chart surfaces
+   below (--surface-1: #f4f7fc light, #0d1a38 dark): every check passes, so a
+   stage stays legible including for protanopia and deuteranopia. Re-validate
+   against the new surface before changing either.                            */
 
 :root {
   color-scheme: light;
 
   /* brand */
+  --navy-900: #0b1f52;
+  --navy-700: #17399a;
   --brand-navy: #183c90;
-  --brand-navy-deep: #0f2a69;
   --brand-blue: #2d57e5;
   --brand-yellow: #ede424;
+  --gold: #f2e829;
+  --aqua: #37b6e9;
+  --leaf: #5bbf4a;
 
   /* surfaces */
-  --page: #eaeef7;
+  --page: #e6ecf6;
   --surface: #ffffff;
-  --surface-1: #f6f8fc; /* the validated light chart surface */
-  --surface-2: #eff3fa;
-  --surface-sunken: #e3e9f5;
-  --header: linear-gradient(118deg, #0f2a69 0%, #183c90 46%, #21489f 100%);
+  --surface-1: #f4f7fc; /* the validated light chart surface */
+  --surface-2: #edf2fa;
+  --surface-sunken: #dfe7f4;
+  --header: linear-gradient(112deg, #0b1f52 0%, #17399a 58%, #1f4bb4 100%);
 
   /* ink */
-  --text-primary: #101a2f;
-  --text-secondary: #46536e;
+  --text-primary: #0c1428;
+  --text-secondary: #3e4c68;
   --text-muted: #5b6780; /* >= 4.5:1 on every light surface here */
-  --text-on-brand: #f4f7ff;
+  --text-on-brand: #ffffff;
+  --text-on-brand-soft: #c3d0ec;
 
   /* lines */
-  --border: #d7dfef;
-  --border-strong: #bcc8e0;
-  --border-faint: #e6ebf6;
+  --border: #d3dced;
+  --border-strong: #b4c2dd;
+  --border-faint: #e4eaf5;
 
   /* accents */
   --focus: #2d57e5;
-  --today: #b3200f;
+  --today: #c02513;
   --cat-fallback: #5b6378;
 
   /* geometry */
   --radius-sm: 6px;
   --radius: 10px;
-  --radius-lg: 16px;
+  --radius-lg: 14px;
   --radius-pill: 999px;
 
-  --shadow-sm: 0 1px 2px rgb(16 26 47 / 0.06), 0 1px 3px rgb(16 26 47 / 0.05);
-  --shadow: 0 2px 4px rgb(16 26 47 / 0.05), 0 8px 24px rgb(16 26 47 / 0.08);
-  --shadow-lg: 0 12px 48px rgb(16 26 47 / 0.18);
+  /* Elevation is spent by role, not stamped on everything: only the calendar
+     itself is lifted, so --shadow-card stays almost invisible. */
+  --shadow-sm: 0 1px 1px rgb(11 31 82 / 0.04);
+  --shadow: 0 1px 2px rgb(11 31 82 / 0.05), 0 10px 26px -12px rgb(11 31 82 / 0.22);
+  --shadow-lg: 0 18px 60px -12px rgb(11 31 82 / 0.32);
 
   --lane-h: 24px;
   --day-head: 30px;
   --axis-h: 56px;
 
-  --font: "Segoe UI", system-ui, -apple-system, "Helvetica Neue", Arial, sans-serif;
+  --font: "Public Sans", "Segoe UI", system-ui, -apple-system, "Helvetica Neue", Arial, sans-serif;
+  --font-display: "Archivo", "Public Sans", "Segoe UI", system-ui, -apple-system, sans-serif;
   --font-num: "SF Mono", ui-monospace, "Cascadia Mono", "Roboto Mono", Menlo, monospace;
 }
 
@@ -67,58 +110,60 @@
   :root:not([data-theme="light"]) {
     color-scheme: dark;
 
-    --page: #070d1d;
-    --surface: #101b36;
-    --surface-1: #0e1730; /* the validated dark chart surface */
-    --surface-2: #162344;
-    --surface-sunken: #0a1226;
-    --header: linear-gradient(118deg, #081128 0%, #0f2153 52%, #16306e 100%);
+    --page: #060c1c;
+    --surface: #101d3d;
+    --surface-1: #0d1a38; /* the validated dark chart surface */
+    --surface-2: #17264b;
+    --surface-sunken: #0a1430;
+    --header: linear-gradient(112deg, #060f26 0%, #102455 58%, #16337a 100%);
 
-    --text-primary: #f1f5ff;
-    --text-secondary: #b6c2dd;
-    --text-muted: #8996b5;
-    --text-on-brand: #eef3ff;
+    --text-primary: #f0f5ff;
+    --text-secondary: #b3c1de;
+    --text-muted: #8795b6;
+    --text-on-brand: #ffffff;
+    --text-on-brand-soft: #b8c7e8;
 
-    --border: #24345c;
-    --border-strong: #35486f;
-    --border-faint: #1b2a4e;
+    --border: #263a68;
+    --border-strong: #37507f;
+    --border-faint: #1c2c55;
 
-    --focus: #6d8dff;
-    --today: #ff6a5a;
+    --focus: #7da0ff;
+    --today: #ff7a68;
     --cat-fallback: #8a93a8;
 
-    --shadow-sm: 0 1px 2px rgb(0 0 0 / 0.4);
-    --shadow: 0 2px 6px rgb(0 0 0 / 0.35), 0 10px 30px rgb(0 0 0 / 0.4);
-    --shadow-lg: 0 16px 56px rgb(0 0 0 / 0.55);
+    --shadow-sm: 0 1px 1px rgb(0 0 0 / 0.3);
+    --shadow: 0 1px 2px rgb(0 0 0 / 0.4), 0 12px 30px -14px rgb(0 0 0 / 0.7);
+    --shadow-lg: 0 20px 64px -12px rgb(0 0 0 / 0.75);
   }
 }
 
 :root[data-theme="dark"] {
   color-scheme: dark;
 
-  --page: #070d1d;
-  --surface: #101b36;
-  --surface-1: #0e1730;
-  --surface-2: #162344;
-  --surface-sunken: #0a1226;
-  --header: linear-gradient(118deg, #081128 0%, #0f2153 52%, #16306e 100%);
+  --page: #060c1c;
+  --surface: #101d3d;
+  --surface-1: #0d1a38;
+  --surface-2: #17264b;
+  --surface-sunken: #0a1430;
+  --header: linear-gradient(112deg, #060f26 0%, #102455 58%, #16337a 100%);
 
-  --text-primary: #f1f5ff;
-  --text-secondary: #b6c2dd;
-  --text-muted: #8996b5;
-  --text-on-brand: #eef3ff;
+  --text-primary: #f0f5ff;
+  --text-secondary: #b3c1de;
+  --text-muted: #8795b6;
+  --text-on-brand: #ffffff;
+  --text-on-brand-soft: #b8c7e8;
 
-  --border: #24345c;
-  --border-strong: #35486f;
-  --border-faint: #1b2a4e;
+  --border: #263a68;
+  --border-strong: #37507f;
+  --border-faint: #1c2c55;
 
-  --focus: #6d8dff;
-  --today: #ff6a5a;
+  --focus: #7da0ff;
+  --today: #ff7a68;
   --cat-fallback: #8a93a8;
 
-  --shadow-sm: 0 1px 2px rgb(0 0 0 / 0.4);
-  --shadow: 0 2px 6px rgb(0 0 0 / 0.35), 0 10px 30px rgb(0 0 0 / 0.4);
-  --shadow-lg: 0 16px 56px rgb(0 0 0 / 0.55);
+  --shadow-sm: 0 1px 1px rgb(0 0 0 / 0.3);
+  --shadow: 0 1px 2px rgb(0 0 0 / 0.4), 0 12px 30px -14px rgb(0 0 0 / 0.7);
+  --shadow-lg: 0 20px 64px -12px rgb(0 0 0 / 0.75);
 }
 
 /* --------------------------------------------------------------- base */
@@ -141,6 +186,7 @@ body {
   font-size: 15px;
   line-height: 1.5;
   -webkit-font-smoothing: antialiased;
+  font-feature-settings: "cv05" 1;
 }
 
 body.has-drawer {
@@ -149,8 +195,10 @@ body.has-drawer {
 
 h1, h2, h3 {
   margin: 0;
-  font-weight: 650;
-  letter-spacing: -0.012em;
+  font-family: var(--font-display);
+  font-weight: 700;
+  letter-spacing: -0.018em;
+  text-wrap: balance;
 }
 
 p {
@@ -219,9 +267,21 @@ svg {
 
 .topbar {
   position: relative;
+  overflow: hidden;
   background: var(--header);
   color: var(--text-on-brand);
-  box-shadow: var(--shadow-sm);
+}
+
+/* The seal's wave, redrawn as a masthead motif. Two offset copies at low
+   opacity, so it reads as water rather than as a decorative swoosh. */
+.topbar::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background-image:
+    radial-gradient(120% 150% at 88% 118%, rgb(55 182 233 / 0.32), transparent 62%),
+    radial-gradient(90% 130% at 96% 8%, rgb(242 232 41 / 0.1), transparent 58%);
+  pointer-events: none;
 }
 
 .topbar::after {
@@ -231,15 +291,17 @@ svg {
   height: 3px;
   background: linear-gradient(
     90deg,
-    var(--brand-yellow) 0%,
-    var(--brand-yellow) 34%,
-    #5bbf4a 34%,
-    #5bbf4a 62%,
-    #4ea8e0 62%
+    var(--gold) 0%,
+    var(--gold) 34%,
+    var(--leaf) 34%,
+    var(--leaf) 62%,
+    var(--aqua) 62%
   );
 }
 
 .topbar__inner {
+  position: relative;
+  z-index: 1;
   display: flex;
   flex-wrap: wrap;
   gap: 18px;
@@ -247,7 +309,7 @@ svg {
   justify-content: space-between;
   max-width: 1500px;
   margin: 0 auto;
-  padding: 18px 20px 20px;
+  padding: 20px 20px 22px;
 }
 
 .brand {
@@ -258,13 +320,13 @@ svg {
 }
 
 .brand__logo {
-  width: 62px;
+  width: 66px;
   height: auto;
   flex: none;
   border-radius: 50%;
   background: #fff;
   padding: 3px;
-  box-shadow: 0 2px 10px rgb(0 0 0 / 0.25);
+  box-shadow: 0 0 0 1px rgb(255 255 255 / 0.5), 0 4px 18px -4px rgb(0 0 0 / 0.55);
 }
 
 .brand__text {
@@ -272,26 +334,33 @@ svg {
 }
 
 .brand__org {
+  font-family: var(--font-display);
   font-size: 11.5px;
-  font-weight: 650;
-  letter-spacing: 0.1em;
+  font-weight: 700;
+  letter-spacing: 0.14em;
   text-transform: uppercase;
-  color: color-mix(in oklab, var(--brand-yellow) 82%, #fff);
+  color: var(--gold);
 }
 
 .brand__title {
-  font-size: clamp(1.2rem, 2.4vw, 1.7rem);
-  line-height: 1.2;
-  margin: 2px 0 3px;
+  font-size: clamp(1.25rem, 2.5vw, 1.85rem);
+  font-weight: 800;
+  line-height: 1.14;
+  letter-spacing: -0.025em;
+  margin: 3px 0 4px;
+}
+
+.brand__title-short {
+  display: none;
 }
 
 .brand__sub {
   font-size: 13px;
-  color: color-mix(in oklab, var(--text-on-brand) 76%, transparent);
+  color: var(--text-on-brand-soft);
 }
 
 .brand__sub strong {
-  font-weight: 650;
+  font-weight: 700;
   color: var(--text-on-brand);
 }
 
@@ -536,28 +605,36 @@ svg {
   align-items: stretch;
 }
 
+/* One continuous ribbon divided by hairlines — four separate cards made every
+   figure look equally important and turned the top of the page into a grid of
+   boxes. */
 .stats {
   display: grid;
-  gap: 12px;
-  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
-}
-
-.stat {
-  padding: 14px 16px 15px;
+  grid-template-columns: repeat(auto-fit, minmax(178px, 1fr));
   border: 1px solid var(--border);
   border-radius: var(--radius-lg);
   background: var(--surface);
-  box-shadow: var(--shadow-sm);
+  overflow: hidden;
+}
+
+.stat {
+  padding: 15px 18px 16px;
+  border-left: 1px solid var(--border-faint);
+}
+
+.stat:first-child {
+  border-left: 0;
 }
 
 .stat__value {
   display: flex;
   align-items: baseline;
   gap: 5px;
-  font-size: 2rem;
+  font-family: var(--font-display);
+  font-size: 2.15rem;
   font-weight: 700;
-  line-height: 1.05;
-  letter-spacing: -0.03em;
+  line-height: 1;
+  letter-spacing: -0.04em;
   font-variant-numeric: tabular-nums;
 }
 
@@ -569,9 +646,11 @@ svg {
 }
 
 .stat__label {
-  margin-top: 3px;
-  font-size: 12.5px;
-  font-weight: 600;
+  margin-top: 6px;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
   color: var(--text-secondary);
 }
 
@@ -586,6 +665,23 @@ svg {
 
 .stat--active .stat__value {
   color: var(--brand-blue);
+}
+
+/* The one place gold appears in the body: the activity running right now. */
+.stat--active {
+  background: linear-gradient(180deg, color-mix(in oklab, var(--gold) 15%, var(--surface)), var(--surface) 62%);
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) .stat--active {
+    background: none;
+    box-shadow: inset 0 2px 0 var(--gold);
+  }
+}
+
+:root[data-theme="dark"] .stat--active {
+  background: none;
+  box-shadow: inset 0 2px 0 var(--gold);
 }
 
 .stat--muted .stat__value {
@@ -616,10 +712,10 @@ svg {
   flex-direction: column;
   gap: 6px;
   justify-content: center;
-  padding: 14px 16px;
+  padding: 15px 18px;
   border: 1px solid var(--border);
   border-radius: var(--radius-lg);
-  border-left: 3px solid var(--brand-yellow);
+  border-left: 3px solid var(--gold);
   background: linear-gradient(
     150deg,
     color-mix(in oklab, var(--brand-yellow) 22%, var(--surface)),
@@ -643,9 +739,10 @@ svg {
 }
 
 .nextup__label {
+  font-family: var(--font-display);
   font-size: 11px;
   font-weight: 700;
-  letter-spacing: 0.1em;
+  letter-spacing: 0.12em;
   text-transform: uppercase;
   color: var(--text-secondary);
 }
@@ -662,9 +759,11 @@ svg {
 
 .nextup__title {
   display: block;
-  font-size: 14.5px;
-  font-weight: 650;
-  line-height: 1.3;
+  font-family: var(--font-display);
+  font-size: 15.5px;
+  font-weight: 700;
+  line-height: 1.25;
+  letter-spacing: -0.015em;
 }
 
 .nextup__btn:hover .nextup__title {
@@ -680,14 +779,13 @@ svg {
 
 /* --------------------------------------------------------------- toolbar */
 
+/* Flat: the controls belong to the calendar below them, so they sit on the
+   page ground under a hairline instead of floating in their own card. */
 .toolbar {
   display: grid;
-  gap: 12px;
-  padding: 13px 14px;
-  border: 1px solid var(--border);
-  border-radius: var(--radius-lg);
-  background: var(--surface);
-  box-shadow: var(--shadow-sm);
+  gap: 11px;
+  padding: 0 2px 13px;
+  border-bottom: 1px solid var(--border);
 }
 
 .toolbar__row {
@@ -750,9 +848,10 @@ svg {
 }
 
 .period__label {
-  font-size: 15.5px;
-  font-weight: 650;
-  letter-spacing: -0.01em;
+  font-family: var(--font-display);
+  font-size: 16.5px;
+  font-weight: 700;
+  letter-spacing: -0.02em;
   white-space: nowrap;
 }
 
@@ -911,20 +1010,18 @@ svg {
 
 /* --------------------------------------------------------------- legend */
 
+/* A key under the calendar reads as a caption, not as another panel. */
 .legendwrap {
   display: grid;
-  gap: 8px;
-  padding: 13px 15px 14px;
-  border: 1px solid var(--border);
-  border-radius: var(--radius-lg);
-  background: var(--surface);
-  box-shadow: var(--shadow-sm);
+  gap: 9px;
+  padding: 2px 2px 0;
 }
 
 .legendwrap__title {
+  font-family: var(--font-display);
   font-size: 11px;
   font-weight: 700;
-  letter-spacing: 0.1em;
+  letter-spacing: 0.12em;
   text-transform: uppercase;
   color: var(--text-muted);
 }
@@ -947,7 +1044,7 @@ svg {
   padding: 6px 11px 6px 9px;
   border: 1px solid var(--border);
   border-radius: var(--radius-pill);
-  background: var(--surface-1);
+  background: var(--surface);
   font-size: 13px;
   font-weight: 550;
   color: var(--text-secondary);
@@ -1138,10 +1235,8 @@ svg {
   flex-wrap: wrap;
   gap: 8px 18px;
   align-items: center;
-  padding: 10px 15px;
-  border: 1px solid var(--border-faint);
-  border-radius: var(--radius);
-  background: color-mix(in oklab, var(--surface) 60%, transparent);
+  padding: 12px 2px 0;
+  border-top: 1px solid var(--border-faint);
 }
 
 .keys__title {
@@ -1222,6 +1317,7 @@ kbd {
    Views
    ========================================================================== */
 
+/* The calendar is the page's subject, so it is the only thing that is lifted. */
 .view {
   /* `clip` rather than `hidden`: it still clips to the rounded corners, but it
      does not become a scrollport, which would pin the agenda's sticky month
@@ -1232,7 +1328,7 @@ kbd {
   border: 1px solid var(--border);
   border-radius: var(--radius-lg);
   background: var(--surface-1);
-  box-shadow: var(--shadow-sm);
+  box-shadow: var(--shadow);
   overflow: hidden;
   overflow: clip;
 }
@@ -1344,12 +1440,12 @@ kbd {
 }
 
 .day.is-today {
-  background: color-mix(in oklab, var(--brand-blue) 7%, transparent);
-  box-shadow: inset 0 0 0 1.5px color-mix(in oklab, var(--brand-blue) 42%, transparent);
+  background: color-mix(in oklab, var(--gold) 17%, transparent);
+  box-shadow: inset 0 0 0 1.5px color-mix(in oklab, var(--navy-700) 30%, transparent);
 }
 
 .day.is-today .day__num {
-  background: var(--today);
+  background: var(--navy-700);
   color: #fff;
   font-weight: 700;
 }
@@ -1928,10 +2024,11 @@ kbd {
 }
 
 .acard__day {
-  font-size: 1.32rem;
+  font-family: var(--font-display);
+  font-size: 1.4rem;
   font-weight: 700;
   line-height: 1.05;
-  letter-spacing: -0.03em;
+  letter-spacing: -0.035em;
   font-variant-numeric: tabular-nums;
 }
 
@@ -1950,10 +2047,11 @@ kbd {
 }
 
 .acard__title {
-  font-size: 14.5px;
+  font-family: var(--font-display);
+  font-size: 15px;
   font-weight: 600;
-  line-height: 1.35;
-  letter-spacing: -0.008em;
+  line-height: 1.32;
+  letter-spacing: -0.014em;
 }
 
 .acard__meta {
@@ -2175,8 +2273,8 @@ kbd {
 }
 
 .drawer__title {
-  font-size: 1.16rem;
-  line-height: 1.28;
+  font-size: 1.24rem;
+  line-height: 1.24;
 }
 
 .drawer__sub {
@@ -2295,11 +2393,74 @@ kbd {
 
 @media (max-width: 720px) {
   .shell {
-    padding: 16px 12px 44px;
+    padding: 14px 16px 40px;
+    gap: 13px;
+  }
+
+  /* The masthead was spending five lines on standing detail. On a phone it
+     carries the seal, a short name and the district — nothing else. */
+  .topbar__inner {
+    flex-wrap: nowrap;
+    gap: 12px;
+    padding: 12px 16px 14px;
+  }
+
+  .brand {
+    gap: 11px;
+    min-width: 0;
   }
 
   .brand__logo {
-    width: 48px;
+    width: 40px;
+    padding: 2px;
+  }
+
+  .brand__title-full {
+    display: none;
+  }
+
+  .brand__title-short {
+    display: inline;
+  }
+
+  .brand__title {
+    font-size: 1.2rem;
+    margin: 0;
+  }
+
+  .brand__org {
+    font-size: 10px;
+    letter-spacing: 0.1em;
+  }
+
+  .brand__sub {
+    display: none;
+  }
+
+  .topbar__actions {
+    gap: 6px;
+    flex: none;
+  }
+
+  /* Icon-only: the labels cost a line the header cannot spare. */
+  .topbar__actions .btn {
+    padding: 8px;
+  }
+
+  /* The accessible name survives, because the label is hidden rather than
+     removed. */
+  .topbar__actions .btn__label {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
+  }
+
+  .topbar__actions .btn__icon {
+    width: 18px;
+    height: 18px;
   }
 
   .u-wide {
@@ -2331,12 +2492,20 @@ kbd {
 
   .stats {
     grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: 8px;
   }
 
+  /* Two columns, so the ribbon's hairlines have to run both ways. */
   .stat {
-    padding: 11px 12px 12px;
-    border-radius: var(--radius);
+    padding: 12px 13px 13px;
+    border-top: 1px solid var(--border-faint);
+  }
+
+  .stat:nth-child(odd) {
+    border-left: 0;
+  }
+
+  .stat:nth-child(-n + 2) {
+    border-top: 0;
   }
 
   .stat__value {
@@ -2352,7 +2521,11 @@ kbd {
   }
 
   .nextup {
-    padding: 11px 13px;
+    padding: 12px 14px;
+  }
+
+  .nextup__title {
+    font-size: 15px;
   }
 
   .acard {
@@ -2385,7 +2558,7 @@ kbd {
 
   .period {
     order: 1;
-    flex: 1 1 auto;
+    flex: 0 1 auto;
   }
 
   .nav {
