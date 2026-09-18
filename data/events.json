@@ -1,0 +1,520 @@
+{
+  "calendar": {
+    "name": "Performance Monitoring Team (PMT) Calendar",
+    "organisation": "Baliwag Water District",
+    "timeZone": "Asia/Manila",
+    "icsUrl": "https://calendar.google.com/calendar/ical/1f439e7aa260c469cb2105d6e8bd9ccd4aa38bf389a48bd06a917bd947a8a43a%40group.calendar.google.com/public/basic.ics",
+    "googleUrl": "https://calendar.google.com/calendar/embed?src=1f439e7aa260c469cb2105d6e8bd9ccd4aa38bf389a48bd06a917bd947a8a43a%40group.calendar.google.com&ctz=Asia%2FManila"
+  },
+  "generatedAt": "2026-09-18T07:34:54.320Z",
+  "range": {
+    "start": "2026-09-16",
+    "end": "2027-10-29"
+  },
+  "categories": [
+    {
+      "id": "kickoff",
+      "label": "Kick-off & Orientation",
+      "short": "Kick-off",
+      "light": "#8c399e",
+      "dark": "#aa3abb",
+      "description": "Opening activities that set the SPMS cycle in motion.",
+      "count": 1
+    },
+    {
+      "id": "monitoring",
+      "label": "Monitoring & Assessment",
+      "short": "Monitoring",
+      "light": "#be260b",
+      "dark": "#cc1a0a",
+      "description": "Quarterly assessment of office targets and budget utilisation.",
+      "count": 3
+    },
+    {
+      "id": "targets",
+      "label": "Individual Targets (IPCR)",
+      "short": "IPCR targets",
+      "light": "#a68922",
+      "dark": "#a8912c",
+      "description": "Setting, calibrating and forwarding individual performance targets.",
+      "count": 5
+    },
+    {
+      "id": "contracting",
+      "label": "Performance Contracting (OPCR/DPCR)",
+      "short": "OPCR/DPCR",
+      "light": "#0e7556",
+      "dark": "#1a7551",
+      "description": "Preparation and calibration of office, department and division scorecards.",
+      "count": 2
+    },
+    {
+      "id": "cascading",
+      "label": "Approval & Cascading",
+      "short": "Cascading",
+      "light": "#0f9ac3",
+      "dark": "#429fc1",
+      "description": "Approval of targets and their communication down the organisation.",
+      "count": 4
+    },
+    {
+      "id": "planning",
+      "label": "Planning & Budgeting",
+      "short": "Planning",
+      "light": "#2d57e5",
+      "dark": "#4b67fa",
+      "description": "Formulating programmes, projects, activities and the budget behind them.",
+      "count": 8
+    }
+  ],
+  "units": [
+    "AGMs (Assistant General Managers)",
+    "Board of Directors",
+    "Corporate Planning Department (CPD)",
+    "CPD Head",
+    "Department / Division Managers",
+    "Division Managers",
+    "Finance Department",
+    "GM (General Manager)",
+    "Immediate Heads",
+    "Immediate Supervisors",
+    "Individual employees",
+    "Managers",
+    "PMT (Performance Monitoring Team)"
+  ],
+  "events": [
+    {
+      "id": "6jmfk85uu584u2bjgotlamfqrp@google.com",
+      "title": "Formulation of PAPs including Budget Allocation",
+      "category": "planning",
+      "allDay": true,
+      "start": "2026-09-16",
+      "end": "2026-09-30",
+      "startTime": null,
+      "endTime": null,
+      "durationDays": 15,
+      "responsible": [
+        "Division Managers",
+        "AGMs (Assistant General Managers)",
+        "Corporate Planning Department (CPD)"
+      ],
+      "output": "PAPs/PMMP/Workforce Plan/L&D Plan",
+      "notes": [],
+      "status": "CONFIRMED",
+      "updated": "2026-09-16T05:33:17.000Z"
+    },
+    {
+      "id": "6iou3m505kek4ud69ideaejlas@google.com",
+      "title": "SPMS Kick off Meeting",
+      "category": "kickoff",
+      "allDay": true,
+      "start": "2026-09-16",
+      "end": "2026-09-16",
+      "startTime": null,
+      "endTime": null,
+      "durationDays": 1,
+      "responsible": [],
+      "output": null,
+      "notes": [
+        "CPD Presentation of Organizational Scorecards",
+        "Target and Performance Review",
+        "SPMS Cycle and Timeline"
+      ],
+      "status": "CONFIRMED",
+      "updated": "2026-09-15T03:45:37.000Z"
+    },
+    {
+      "id": "5d159d5ss4f8geakqbcitu1csi@google.com",
+      "title": "Workforce Planning",
+      "category": "planning",
+      "allDay": true,
+      "start": "2026-10-01",
+      "end": "2026-10-05",
+      "startTime": null,
+      "endTime": null,
+      "durationDays": 5,
+      "responsible": [],
+      "output": null,
+      "notes": [],
+      "status": "CONFIRMED",
+      "updated": "2026-09-16T05:20:18.000Z"
+    },
+    {
+      "id": "5botuoopo4m6b109clk3125r5v@google.com",
+      "title": "Consolidation of PAPs with Corresponding Budget",
+      "category": "planning",
+      "allDay": true,
+      "start": "2026-10-06",
+      "end": "2026-10-16",
+      "startTime": null,
+      "endTime": null,
+      "durationDays": 11,
+      "responsible": [
+        "Division Managers",
+        "AGMs (Assistant General Managers)",
+        "Corporate Planning Department (CPD)",
+        "Finance Department"
+      ],
+      "output": null,
+      "notes": [],
+      "status": "CONFIRMED",
+      "updated": "2026-09-16T05:34:30.000Z"
+    },
+    {
+      "id": "lvgnrtkce85dcbeknk2dl250f8@google.com",
+      "title": "Presentation of water demand and supply projection to GM",
+      "category": "planning",
+      "allDay": false,
+      "start": "2026-10-16",
+      "end": "2026-10-16",
+      "startTime": "08:30",
+      "endTime": "11:30",
+      "durationDays": 1,
+      "responsible": [],
+      "output": null,
+      "notes": [],
+      "status": "CONFIRMED",
+      "updated": "2026-09-17T10:25:07.000Z"
+    },
+    {
+      "id": "4cfh29t3hvkd4rc8jic7kfoprp@google.com",
+      "title": "Presentation to the General Manager",
+      "category": "planning",
+      "allDay": true,
+      "start": "2026-10-22",
+      "end": "2026-10-30",
+      "startTime": null,
+      "endTime": null,
+      "durationDays": 9,
+      "responsible": [
+        "Division Managers",
+        "AGMs (Assistant General Managers)",
+        "Corporate Planning Department (CPD)",
+        "Finance Department"
+      ],
+      "output": null,
+      "notes": [],
+      "status": "CONFIRMED",
+      "updated": "2026-09-16T05:35:22.000Z"
+    },
+    {
+      "id": "km4u2508eol5eaid0crr9nd4kk@google.com",
+      "title": "Initial presentation of proposed plan, programs and budget for 2027 to GM",
+      "category": "planning",
+      "allDay": false,
+      "start": "2026-10-23",
+      "end": "2026-10-23",
+      "startTime": "08:30",
+      "endTime": "15:30",
+      "durationDays": 1,
+      "responsible": [],
+      "output": null,
+      "notes": [],
+      "status": "CONFIRMED",
+      "updated": "2026-09-17T10:26:00.000Z"
+    },
+    {
+      "id": "6rog5embdt1vl5oaaqjm33od63@google.com",
+      "title": "Presentation to the Board of Directors",
+      "category": "planning",
+      "allDay": true,
+      "start": "2026-11-04",
+      "end": "2026-11-06",
+      "startTime": null,
+      "endTime": null,
+      "durationDays": 3,
+      "responsible": [
+        "GM (General Manager)",
+        "AGMs (Assistant General Managers)",
+        "Managers",
+        "Corporate Planning Department (CPD)",
+        "Finance Department"
+      ],
+      "output": null,
+      "notes": [],
+      "status": "CONFIRMED",
+      "updated": "2026-09-16T05:38:59.000Z"
+    },
+    {
+      "id": "28pja16ljmhhq2nhi6h6m34sic@google.com",
+      "title": "Approval",
+      "category": "cascading",
+      "allDay": true,
+      "start": "2026-11-06",
+      "end": "2026-11-06",
+      "startTime": null,
+      "endTime": null,
+      "durationDays": 1,
+      "responsible": [
+        "Board of Directors"
+      ],
+      "output": null,
+      "notes": [],
+      "status": "CONFIRMED",
+      "updated": "2026-09-16T05:39:57.000Z"
+    },
+    {
+      "id": "3n5gnaiv7ottu390mfhtssdpts@google.com",
+      "title": "Review and Finalization of Budgets and Targets",
+      "category": "planning",
+      "allDay": true,
+      "start": "2026-11-09",
+      "end": "2026-11-20",
+      "startTime": null,
+      "endTime": null,
+      "durationDays": 12,
+      "responsible": [
+        "Division Managers",
+        "AGMs (Assistant General Managers)",
+        "Corporate Planning Department (CPD)",
+        "Finance Department"
+      ],
+      "output": "Revised PMMP/Revised Plan/Revised Budget",
+      "notes": [],
+      "status": "CONFIRMED",
+      "updated": "2026-09-16T05:42:46.000Z"
+    },
+    {
+      "id": "6gori5s3ubmsig69od8lvrpc6k@google.com",
+      "title": "Communication of Organizational Goals through Department/Division Managers",
+      "category": "cascading",
+      "allDay": true,
+      "start": "2026-11-23",
+      "end": "2026-11-27",
+      "startTime": null,
+      "endTime": null,
+      "durationDays": 5,
+      "responsible": [
+        "Department / Division Managers"
+      ],
+      "output": "Reviewed Plans and Budget",
+      "notes": [],
+      "status": "CONFIRMED",
+      "updated": "2026-09-16T05:42:25.000Z"
+    },
+    {
+      "id": "3sj6ohsijt8qmslh7k8lvrmd8d@google.com",
+      "title": "Preparation of OPCR, DPCRs and dPCRs and submission to PMT",
+      "category": "contracting",
+      "allDay": true,
+      "start": "2026-12-01",
+      "end": "2026-12-02",
+      "startTime": null,
+      "endTime": null,
+      "durationDays": 2,
+      "responsible": [
+        "PMT (Performance Monitoring Team)",
+        "Division Managers"
+      ],
+      "output": "OPCR/DPCRs/dPCRs",
+      "notes": [],
+      "status": "CONFIRMED",
+      "updated": "2026-09-16T05:43:29.000Z"
+    },
+    {
+      "id": "072o5pdi759mlsgnrl4dsb78de@google.com",
+      "title": "Calibration and approval of DPCRs and dPCRs",
+      "category": "contracting",
+      "allDay": true,
+      "start": "2026-12-03",
+      "end": "2026-12-04",
+      "startTime": null,
+      "endTime": null,
+      "durationDays": 2,
+      "responsible": [
+        "GM (General Manager)",
+        "PMT (Performance Monitoring Team)"
+      ],
+      "output": "Calibrated OPCR/DPCRs/dPCRs",
+      "notes": [],
+      "status": "CONFIRMED",
+      "updated": "2026-09-16T05:44:12.000Z"
+    },
+    {
+      "id": "0dvtg463sh0hf6vmcbn51egurc@google.com",
+      "title": "Communication of approved OPCR, DPCRs and dPCRs",
+      "category": "cascading",
+      "allDay": true,
+      "start": "2026-12-04",
+      "end": "2026-12-04",
+      "startTime": null,
+      "endTime": null,
+      "durationDays": 1,
+      "responsible": [
+        "AGMs (Assistant General Managers)",
+        "Department / Division Managers"
+      ],
+      "output": null,
+      "notes": [],
+      "status": "CONFIRMED",
+      "updated": "2026-09-16T05:45:58.000Z"
+    },
+    {
+      "id": "7c4a86ap1g6bf5e6lgbb1fa6m9@google.com",
+      "title": "Cascading of Organizational Goals and Priority Programs to all employees",
+      "category": "cascading",
+      "allDay": true,
+      "start": "2026-12-07",
+      "end": "2026-12-07",
+      "startTime": null,
+      "endTime": null,
+      "durationDays": 1,
+      "responsible": [
+        "CPD Head",
+        "GM (General Manager)"
+      ],
+      "output": null,
+      "notes": [],
+      "status": "CONFIRMED",
+      "updated": "2026-09-16T05:48:32.000Z"
+    },
+    {
+      "id": "7llr8pbe3951dap43m7bs7ajkh@google.com",
+      "title": "Communication of Division targets to Individual Employees",
+      "category": "targets",
+      "allDay": true,
+      "start": "2026-12-07",
+      "end": "2026-12-11",
+      "startTime": null,
+      "endTime": null,
+      "durationDays": 5,
+      "responsible": [
+        "Immediate Heads"
+      ],
+      "output": null,
+      "notes": [],
+      "status": "CONFIRMED",
+      "updated": "2026-09-16T05:49:24.000Z"
+    },
+    {
+      "id": "7bd9lqjenncs9r4nsr57bav2lg@google.com",
+      "title": "Setting and Commitment of Individual Targets for the First Semester",
+      "category": "targets",
+      "allDay": true,
+      "start": "2026-12-07",
+      "end": "2026-12-11",
+      "startTime": null,
+      "endTime": null,
+      "durationDays": 5,
+      "responsible": [
+        "Immediate Supervisors",
+        "Individual employees"
+      ],
+      "output": "IPCR-Targets",
+      "notes": [],
+      "status": "CONFIRMED",
+      "updated": "2026-09-16T05:50:39.000Z"
+    },
+    {
+      "id": "2d0qi1k3pg41qc03l2m6rrmrul@google.com",
+      "title": "Submission of IPCR Targets to TDD",
+      "category": "targets",
+      "allDay": true,
+      "start": "2026-12-14",
+      "end": "2026-12-14",
+      "startTime": null,
+      "endTime": null,
+      "durationDays": 1,
+      "responsible": [
+        "Department / Division Managers"
+      ],
+      "output": null,
+      "notes": [],
+      "status": "CONFIRMED",
+      "updated": "2026-09-16T05:51:20.000Z"
+    },
+    {
+      "id": "1t7af74f5ovenuspv4g61arlue@google.com",
+      "title": "Review and calibration of IPCR Targets",
+      "category": "targets",
+      "allDay": true,
+      "start": "2026-12-17",
+      "end": "2026-12-18",
+      "startTime": null,
+      "endTime": null,
+      "durationDays": 2,
+      "responsible": [
+        "PMT (Performance Monitoring Team)"
+      ],
+      "output": "Calibrated IPCR-Targets",
+      "notes": [],
+      "status": "CONFIRMED",
+      "updated": "2026-09-16T05:52:14.000Z"
+    },
+    {
+      "id": "4hii1g1rshf3a5ol69j8rb14oj@google.com",
+      "title": "Forwarding of approved IPCR Targets",
+      "category": "targets",
+      "allDay": true,
+      "start": "2026-12-18",
+      "end": "2026-12-18",
+      "startTime": null,
+      "endTime": null,
+      "durationDays": 1,
+      "responsible": [
+        "Department / Division Managers"
+      ],
+      "output": null,
+      "notes": [],
+      "status": "CONFIRMED",
+      "updated": "2026-09-16T05:52:48.000Z"
+    },
+    {
+      "id": "7ef9sbdqu0g5cdmhul23cd6tnf@google.com",
+      "title": "Quarterly Assessment of Office Targets and Presentation of Budget Utilization",
+      "category": "monitoring",
+      "allDay": true,
+      "start": "2027-04-26",
+      "end": "2027-04-30",
+      "startTime": null,
+      "endTime": null,
+      "durationDays": 5,
+      "responsible": [
+        "Corporate Planning Department (CPD)",
+        "Finance Department"
+      ],
+      "output": null,
+      "notes": [],
+      "status": "CONFIRMED",
+      "updated": "2026-09-16T05:58:57.000Z"
+    },
+    {
+      "id": "5egi7ag491aoukurgnsc4emu98@google.com",
+      "title": "Quarterly Assessment of Office Targets and Presentation of Budget Utilization",
+      "category": "monitoring",
+      "allDay": true,
+      "start": "2027-07-26",
+      "end": "2027-07-30",
+      "startTime": null,
+      "endTime": null,
+      "durationDays": 5,
+      "responsible": [
+        "Corporate Planning Department (CPD)",
+        "Finance Department"
+      ],
+      "output": null,
+      "notes": [],
+      "status": "CONFIRMED",
+      "updated": "2026-09-16T05:59:43.000Z"
+    },
+    {
+      "id": "7pvtctv15b10mq8c508v705766@google.com",
+      "title": "Quarterly Assessment of Office Targets and Presentation of Budget Utilization",
+      "category": "monitoring",
+      "allDay": true,
+      "start": "2027-10-25",
+      "end": "2027-10-29",
+      "startTime": null,
+      "endTime": null,
+      "durationDays": 5,
+      "responsible": [
+        "Corporate Planning Department (CPD)",
+        "Finance Department"
+      ],
+      "output": null,
+      "notes": [],
+      "status": "CONFIRMED",
+      "updated": "2026-09-16T06:00:43.000Z"
+    }
+  ]
+}

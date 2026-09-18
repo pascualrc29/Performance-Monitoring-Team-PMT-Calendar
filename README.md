@@ -1,0 +1,147 @@
+# Performance Monitoring Team (PMT) Calendar
+
+An interactive web calendar for the **Performance Monitoring Team of Baliwag
+Water District** — the Strategic Performance Management System (SPMS) cycle
+shown four ways: a month grid, a Gantt timeline, an agenda and a sortable
+table.
+
+<p align="center">
+  <img src="assets/img/bwd-logo.png" alt="Baliwag Water District seal" width="110">
+</p>
+
+## What it does
+
+| View | What it is for |
+| --- | --- |
+| **Month** | The familiar calendar grid. Multi-day activities run as continuous bars across the weeks, packed into lanes so nothing overlaps. |
+| **Timeline** | A Gantt chart of the whole cycle. Activities are grouped into SPMS stages (or by responsible unit), with a today line, elapsed-time shading on running activities, and four zoom levels from *Fit all* down to day resolution. |
+| **Agenda** | A chronological list grouped by month, with the responsible units and the expected output of each activity. |
+| **Table** | Every field in a sortable, printable table — also the accessible fallback for the two visual views. |
+
+Across all of them:
+
+- **Search** activity names, responsible units, outputs and meeting notes.
+- **Filter** by SPMS stage (the legend doubles as the filter), by responsible
+  unit, and by status (running / upcoming / completed).
+- **Open any activity** for its schedule, duration, responsible units, expected
+  output, agenda notes, and one-click *Add to Google Calendar* or `.ics`
+  download.
+- **Export** what is on screen as `.ics` or `.csv`, or print it (the print
+  stylesheet drops the chrome and keeps the schedule).
+- **Share a link.** The view, month, zoom, grouping and every filter live in the
+  URL hash, so `#view=timeline&zoom=weeks&cat=targets` is a bookmarkable link.
+- **Light and dark themes**, keyboard shortcuts, and a layout that works from
+  phone width upward.
+
+### Keyboard
+
+| Key | Action |
+| --- | --- |
+| <kbd>1</kbd> … <kbd>4</kbd> | Month / Timeline / Agenda / Table |
+| <kbd>←</kbd> <kbd>→</kbd> | Previous / next month |
+| <kbd>T</kbd> | Jump to today |
+| <kbd>/</kbd> | Focus the search box |
+| <kbd>Esc</kbd> | Close the activity panel |
+
+## Running it locally
+
+The site is plain HTML, CSS and ES modules — no build step, no dependencies.
+It does need to be served over HTTP, because browsers block `fetch` on
+`file://` URLs:
+
+```sh
+npx http-server -p 8080 .
+# or
+python3 -m http.server 8080
+```
+
+Then open <http://localhost:8080/>.
+
+## Where the data comes from
+
+The schedule is the public **Performance Monitoring Team (PMT) Calendar** on
+Google Calendar. Google's iCalendar endpoint sends no CORS headers, so the page
+cannot read it directly from the browser. Instead the feed is mirrored into this
+repository:
+
+```sh
+node scripts/build-data.mjs             # read the live feed, rewrite the snapshot
+node scripts/build-data.mjs --offline    # re-parse data/pmt-calendar.ics only
+```
+
+That script:
+
+1. fetches the `.ics` feed and caches it at `data/pmt-calendar.ics`;
+2. unfolds and parses it, converting every date to an **inclusive** calendar
+   date in `Asia/Manila` (Google's `DTEND` is exclusive for all-day events);
+3. pulls `Unit/Person Responsible` and `Output` out of each description and
+   folds naming variants onto one label, so "CPD" and "Corporate Planning
+   Department" are the same entry in the unit filter;
+4. classifies each activity into one of six SPMS stages by keyword;
+5. writes `data/events.json`, which is the only thing the site reads.
+
+`.github/workflows/refresh-calendar.yml` runs this twice a day and commits the
+snapshot when the calendar changes, so the published site follows the Google
+Calendar without anyone touching the code.
+
+### Adding or changing activities
+
+Edit the Google Calendar — do not edit `data/events.json` by hand; the refresh
+job would overwrite it. Put the supporting detail in the event description, in
+the shape the calendar already uses:
+
+```
+Unit/Person Responsible: Division Managers, AGMs, CPD
+Output: PAPs/PMMP/Workforce Plan/L&D Plan
+```
+
+Anything else in the description shows up as agenda notes on the activity panel.
+
+## Deployment
+
+`.github/workflows/deploy-pages.yml` publishes the repository root to GitHub
+Pages on every push to `main`. In the repository settings, set
+**Pages → Build and deployment → Source** to **GitHub Actions**. Nothing else
+to configure; `.nojekyll` keeps Pages from reprocessing the files.
+
+## How it is put together
+
+```
+index.html                     page shell and static chrome
+assets/css/styles.css          design tokens, components, print styles
+assets/js/main.js              state, URL-hash routing, filters, KPI strip
+assets/js/store.js             data loading, filtering, lane packing, exports
+assets/js/dates.js             calendar-date arithmetic and formatting
+assets/js/detail.js            the activity panel (modal, focus trap)
+assets/js/views/month.js       month grid
+assets/js/views/gantt.js       Gantt timeline
+assets/js/views/list.js        agenda and table
+scripts/build-data.mjs         iCalendar feed → data/events.json
+data/events.json               the published schedule (generated)
+data/pmt-calendar.ics          raw feed snapshot (generated)
+```
+
+### A note on the colours
+
+The brand colours are taken from the district seal: navy `#183C90` and yellow
+`#EDE424`. The six SPMS stage colours live in `scripts/build-data.mjs` and are
+published through `data/events.json`, which the page turns into `--cat-*` CSS
+variables at load.
+
+Both the light and the dark sets were checked with a palette validator on the
+**all-pairs** comparison against the exact chart surfaces this site uses
+(`#F6F8FC` light, `#0E1730` dark). Every stage colour clears the lightness band,
+the chroma floor, 3:1 contrast against its surface, and — the point of the
+exercise — stays separable under protanopia and deuteranopia (worst pair ΔE 10.1
+light / 10.5 dark against a target of 8; worst normal-vision pair 17.8 / 18.3
+against a floor of 15).
+
+Because colour alone should never carry meaning, the stage is also named in the
+legend, in the timeline's row labels, in the table and on the activity panel.
+Timeline bars carry their dates in body ink beside the mark rather than on it,
+and upcoming activities are hatched as well as coloured. **Re-run the validator
+before changing any stage colour.**
+
+---
+
+Baliwag Water District · Performance Monitoring Team · Baliwag City, Bulacan
