@@ -6,10 +6,10 @@
     "icsUrl": "https://calendar.google.com/calendar/ical/1f439e7aa260c469cb2105d6e8bd9ccd4aa38bf389a48bd06a917bd947a8a43a%40group.calendar.google.com/public/basic.ics",
     "googleUrl": "https://calendar.google.com/calendar/embed?src=1f439e7aa260c469cb2105d6e8bd9ccd4aa38bf389a48bd06a917bd947a8a43a%40group.calendar.google.com&ctz=Asia%2FManila"
   },
-  "generatedAt": "2026-09-18T07:34:54.320Z",
+  "generatedAt": "2026-09-18T13:11:55.100Z",
   "range": {
     "start": "2026-09-16",
-    "end": "2027-10-29"
+    "end": "2026-12-18"
   },
   "categories": [
     {
@@ -19,16 +19,9 @@
       "light": "#8c399e",
       "dark": "#aa3abb",
       "description": "Opening activities that set the SPMS cycle in motion.",
+      "ink": "#ffffff",
+      "inkDark": "#ffffff",
       "count": 1
-    },
-    {
-      "id": "monitoring",
-      "label": "Monitoring & Assessment",
-      "short": "Monitoring",
-      "light": "#be260b",
-      "dark": "#cc1a0a",
-      "description": "Quarterly assessment of office targets and budget utilisation.",
-      "count": 3
     },
     {
       "id": "targets",
@@ -37,6 +30,8 @@
       "light": "#a68922",
       "dark": "#a8912c",
       "description": "Setting, calibrating and forwarding individual performance targets.",
+      "ink": "#0c1428",
+      "inkDark": "#0c1428",
       "count": 5
     },
     {
@@ -46,6 +41,8 @@
       "light": "#0e7556",
       "dark": "#1a7551",
       "description": "Preparation and calibration of office, department and division scorecards.",
+      "ink": "#ffffff",
+      "inkDark": "#ffffff",
       "count": 2
     },
     {
@@ -55,6 +52,8 @@
       "light": "#0f9ac3",
       "dark": "#429fc1",
       "description": "Approval of targets and their communication down the organisation.",
+      "ink": "#0c1428",
+      "inkDark": "#0c1428",
       "count": 4
     },
     {
@@ -64,6 +63,8 @@
       "light": "#2d57e5",
       "dark": "#4b67fa",
       "description": "Formulating programmes, projects, activities and the budget behind them.",
+      "ink": "#ffffff",
+      "inkDark": "#ffffff",
       "count": 8
     }
   ],
@@ -458,63 +459,6 @@
       "notes": [],
       "status": "CONFIRMED",
       "updated": "2026-09-16T05:52:48.000Z"
-    },
-    {
-      "id": "7ef9sbdqu0g5cdmhul23cd6tnf@google.com",
-      "title": "Quarterly Assessment of Office Targets and Presentation of Budget Utilization",
-      "category": "monitoring",
-      "allDay": true,
-      "start": "2027-04-26",
-      "end": "2027-04-30",
-      "startTime": null,
-      "endTime": null,
-      "durationDays": 5,
-      "responsible": [
-        "Corporate Planning Department (CPD)",
-        "Finance Department"
-      ],
-      "output": null,
-      "notes": [],
-      "status": "CONFIRMED",
-      "updated": "2026-09-16T05:58:57.000Z"
-    },
-    {
-      "id": "5egi7ag491aoukurgnsc4emu98@google.com",
-      "title": "Quarterly Assessment of Office Targets and Presentation of Budget Utilization",
-      "category": "monitoring",
-      "allDay": true,
-      "start": "2027-07-26",
-      "end": "2027-07-30",
-      "startTime": null,
-      "endTime": null,
-      "durationDays": 5,
-      "responsible": [
-        "Corporate Planning Department (CPD)",
-        "Finance Department"
-      ],
-      "output": null,
-      "notes": [],
-      "status": "CONFIRMED",
-      "updated": "2026-09-16T05:59:43.000Z"
-    },
-    {
-      "id": "7pvtctv15b10mq8c508v705766@google.com",
-      "title": "Quarterly Assessment of Office Targets and Presentation of Budget Utilization",
-      "category": "monitoring",
-      "allDay": true,
-      "start": "2027-10-25",
-      "end": "2027-10-29",
-      "startTime": null,
-      "endTime": null,
-      "durationDays": 5,
-      "responsible": [
-        "Corporate Planning Department (CPD)",
-        "Finance Department"
-      ],
-      "output": null,
-      "notes": [],
-      "status": "CONFIRMED",
-      "updated": "2026-09-16T06:00:43.000Z"
     }
   ]
 }

@@ -13,7 +13,7 @@ import {
   isWeekend, monthsBetween, MONTHS_SHORT, quarterOf, spanDays, startOfMonth,
   startOfWeek,
 } from "../dates.js";
-import { groupByCategory, groupByUnit, LIFECYCLE_LABEL } from "../store.js";
+import { groupByCategory, groupByUnit, LIFECYCLE_LABEL, paintStage } from "../store.js";
 
 /** Zoom presets, in pixels per day. `fit` is computed from the container. */
 export const ZOOM_LEVELS = [
@@ -84,7 +84,7 @@ export function renderGantt(container, options) {
 
     const label = document.createElement("div");
     label.className = "glabel glabel--group";
-    if (group.color) label.style.setProperty("--series", `var(--cat-${group.color})`);
+    if (group.color) paintStage(label, group.color);
     label.innerHTML =
       `<span class="glabel__swatch"></span>` +
       `<span class="glabel__text">${escapeHtml(group.label)}</span>` +
@@ -93,7 +93,7 @@ export function renderGantt(container, options) {
 
     const lane = document.createElement("div");
     lane.className = "glane glane--group";
-    if (group.color) lane.style.setProperty("--series", `var(--cat-${group.color})`);
+    if (group.color) paintStage(lane, group.color);
     const track = document.createElement("div");
     track.className = "gtrack";
     track.style.setProperty("--offset", String(diffDays(rangeStart, groupStart)));
@@ -290,7 +290,7 @@ function buildGridlines({ rangeStart, rangeEnd, pxPerDay, today, totalDays }) {
 function buildRowLabel(event, categoryById) {
   const label = document.createElement("div");
   label.className = `glabel glabel--event is-${event.lifecycle}`;
-  label.style.setProperty("--series", `var(--cat-${event.category})`);
+  paintStage(label, event.category);
 
   const button = document.createElement("button");
   button.type = "button";
@@ -328,7 +328,7 @@ function buildRowLane({ event, rangeStart, pxPerDay, totalDays, categoryById }) 
   ]
     .filter(Boolean)
     .join(" ");
-  bar.style.setProperty("--series", `var(--cat-${event.category})`);
+  paintStage(bar, event.category);
   bar.style.setProperty("--offset", String(diffDays(rangeStart, event.start)));
   bar.style.setProperty("--days", String(days));
   bar.style.setProperty("--min-w", `${MIN_BAR_PX}px`);

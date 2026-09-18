@@ -6,11 +6,11 @@
  */
 
 import {
-  addMonths, diffDays, formatDay, MONTHS, relativeLabel, spanDays, startOfMonth,
+  addMonths, formatDay, MONTHS, relativeLabel, spanDays, startOfMonth,
 } from "./dates.js";
 import {
-  ALL_YEARS, download, filterEvents, LIFECYCLE_LABEL, loadCalendar, toCSV,
-  toICS, yearsCovered,
+  ALL_YEARS, filterEvents, LIFECYCLE_LABEL, loadCalendar, paintStage, stageStyle,
+  yearsCovered,
 } from "./store.js";
 import { createDetailDrawer } from "./detail.js";
 import { initPWA } from "./pwa.js";
@@ -76,7 +76,10 @@ function defaultState() {
   const inRange = today >= data.range.start && today <= data.range.end;
   const years = yearsCovered(data.range);
   return {
-    view: "month",
+    // A month grid is unreadable on a phone-width screen, so a phone opens on
+    // the agenda and a larger screen on the calendar. An explicit ?view= in the
+    // link always wins over this.
+    view: window.matchMedia("(max-width: 720px)").matches ? "agenda" : "month",
     anchor: startOfMonth(inRange ? today : data.range.start),
     // Open on the year we are in, not on the whole cycle — the timeline of a
     // 14-month cycle is unreadable as a first impression.
@@ -221,8 +224,10 @@ function injectCategoryColors() {
   const light = [];
   const dark = [];
   for (const category of data.categories) {
-    light.push(`--cat-${category.id}: ${category.light};`);
-    dark.push(`--cat-${category.id}: ${category.dark};`);
+    // The ink is computed per stage at build time, so a solid stage-coloured
+    // mark can carry a label that actually reads on it.
+    light.push(`--cat-${category.id}: ${category.light}; --cat-${category.id}-ink: ${category.ink};`);
+    dark.push(`--cat-${category.id}: ${category.dark}; --cat-${category.id}-ink: ${category.inkDark};`);
   }
   let style = document.getElementById("category-colors");
   if (!style) {
@@ -286,19 +291,6 @@ function buildChrome() {
   const groupSelect = $("#group-by");
   groupSelect.addEventListener("change", () => setState({ groupBy: groupSelect.value }));
 
-  /* search */
-  const search = $("#search");
-  let searchTimer = null;
-  search.addEventListener("input", () => {
-    clearTimeout(searchTimer);
-    searchTimer = setTimeout(() => setState({ query: search.value }, { replace: true }), 180);
-  });
-  $("#search-clear").addEventListener("click", () => {
-    search.value = "";
-    setState({ query: "" });
-    search.focus();
-  });
-
   /* unit filter (options are filled by applyData) */
   const unitSelect = $("#unit-filter");
   unitSelect.addEventListener("change", () => {
@@ -325,26 +317,11 @@ function buildChrome() {
   /* refresh */
   $("#refresh").addEventListener("click", refreshData);
 
-  /* exports */
-  $("#export-ics").addEventListener("click", () => {
-    const events = visibleEvents();
-    download(
-      `bwd-pmt-calendar-${data.today}.ics`,
-      toICS(events, data.calendar, data.categoryById),
-      "text/calendar",
-    );
-    announceExport(events.length, "iCalendar file");
-  });
-  $("#export-csv").addEventListener("click", () => {
-    const events = visibleEvents();
-    download(`bwd-pmt-calendar-${data.today}.csv`, toCSV(events, data.categoryById), "text/csv");
-    announceExport(events.length, "spreadsheet");
-  });
-  $("#print").addEventListener("click", () => window.print());
-
-  /* event delegation for every view */
+  /* Event delegation for anything that opens an activity. Bound to the shell
+     rather than to the view, because the hero rows sit above it — bound to the
+     view, their clicks went nowhere. */
   const view = $("#view");
-  view.addEventListener("click", (clickEvent) => {
+  document.querySelector(".shell").addEventListener("click", (clickEvent) => {
     const target = clickEvent.target.closest('[data-action="open-event"]');
     if (!target) return;
     const event = data.events.find((item) => item.id === target.dataset.eventId);
@@ -468,7 +445,7 @@ function applyData() {
     chip.type = "button";
     chip.className = "chip";
     chip.dataset.category = category.id;
-    chip.style.setProperty("--series", `var(--cat-${category.id})`);
+    paintStage(chip, category.id);
     chip.setAttribute("aria-pressed", "false");
     chip.title = category.description ?? category.label;
     chip.innerHTML =
@@ -551,8 +528,6 @@ function syncControls() {
     chip.setAttribute("aria-pressed", String(active));
   }
 
-  $("#search").value = state.query;
-  $("#search-clear").hidden = !state.query;
   $("#unit-filter").value = [...state.units][0] ?? "";
   $("#status-filter").value = [...state.lifecycles][0] ?? "";
   $("#group-by").value = state.groupBy;
@@ -661,20 +636,6 @@ async function refreshData() {
   }
 }
 
-/**
- * An export carries what is on screen, which the period selector narrows — so
- * say how many activities went into the file rather than letting someone
- * assume they exported the whole cycle.
- */
-function announceExport(count, kind) {
-  const scope =
-    state.period === ALL_YEARS ? "the whole cycle" : `${state.period}`;
-  toast(
-    `${count} ${count === 1 ? "activity" : "activities"} exported`,
-    `The ${kind} holds what is currently in view (${scope}).`,
-  );
-}
-
 let toastTimer = null;
 
 function toast(title, detail, tone = "info") {
@@ -764,7 +725,7 @@ function render() {
         inOtherYears
           ? `Nothing matches in ${escapeHtml(state.period)}, but ${inOtherYears} ` +
             `${inOtherYears === 1 ? "activity matches" : "activities match"} elsewhere in the cycle.`
-          : "Try clearing the search box or re-enabling an SPMS stage in the legend below."
+          : "Try re-enabling an SPMS stage in the legend below, or clearing the unit and status filters."
       }</p>` +
       `<div class="notice__actions">${
         inOtherYears
@@ -783,77 +744,70 @@ function render() {
   }`;
 }
 
+/**
+ * Two rows, not a wall of figures: what is running right now, and what is next.
+ * Both open the activity when clicked.
+ */
 function renderStats(events) {
   const today = data.today;
-  const active = events.filter((event) => event.lifecycle === "active");
-  const upcoming = events
-    .filter((event) => event.lifecycle === "upcoming")
+
+  const running = events
+    .filter((event) => event.lifecycle === "active")
     .sort((a, b) => a.start.localeCompare(b.start));
-  const done = events.filter((event) => event.lifecycle === "done");
+  const next = events
+    .filter((event) => event.lifecycle === "upcoming")
+    .sort((a, b) => a.start.localeCompare(b.start))[0];
 
-  const cycleDays = spanDays(data.range.start, data.range.end);
-  const elapsed = Math.min(cycleDays, Math.max(0, diffDays(data.range.start, today) + 1));
-  const pct = Math.round((elapsed / cycleDays) * 100);
+  $("#hero-now").innerHTML = running.length
+    ? heroCard({
+        kind: "now",
+        eyebrow: running.length > 1 ? `Running today · ${running.length} activities` : "Running today",
+        event: running[0],
+        meta: `Day ${Math.max(1, spanDays(running[0].start, today))} of ${running[0].durationDays} · ends ${formatDay(running[0].end)}`,
+        progress: Math.round(running[0].progress * 100),
+      })
+    : heroEmpty("Running today", "Nothing scheduled for today", formatDay(today));
 
-  const next = upcoming[0];
+  $("#hero-next").innerHTML = next
+    ? heroCard({
+        kind: "next",
+        eyebrow: "Next up",
+        event: next,
+        meta: `${formatDay(next.start)} · ${relativeLabel(next.start, today)} · ${
+          next.durationDays === 1 ? "1 day" : `${next.durationDays} days`
+        }`,
+      })
+    : heroEmpty(
+        "Next up",
+        "Nothing further in this period",
+        state.period === ALL_YEARS ? "The cycle is complete" : `Try another year`,
+      );
+}
 
-  const tiles = [
-    {
-      value: String(events.length),
-      label: events.length === data.events.length ? "Activities in the cycle" : "Activities shown",
-      note:
-        events.length === data.events.length
-          ? `${formatDay(data.range.start)} – ${formatDay(data.range.end)}`
-          : `of ${data.events.length} in the cycle`,
-    },
-    {
-      value: String(active.length),
-      label: "Running today",
-      note: active.length
-        ? active[0].title.length > 38
-          ? `${active[0].title.slice(0, 36)}…`
-          : active[0].title
-        : "Nothing scheduled for today",
-      tone: active.length ? "active" : "muted",
-    },
-    {
-      value: next ? String(Math.max(0, diffDays(today, next.start))) : "—",
-      unit: next ? "days" : "",
-      label: "Until the next activity",
-      note: next ? `${next.title.length > 38 ? `${next.title.slice(0, 36)}…` : next.title}` : "No upcoming activity",
-      tone: "upcoming",
-    },
-    {
-      value: `${pct}%`,
-      label: "Cycle elapsed",
-      note: `${done.length} of ${events.length} activities completed`,
-      meter: pct,
-    },
-  ];
+function heroCard({ kind, eyebrow, event, meta, progress }) {
+  const category = data.categoryById.get(event.category);
+  return (
+    `<button type="button" class="hero__btn" data-action="open-event" data-event-id="${escapeHtml(event.id)}"` +
+    ` style="${stageStyle(event.category)}">` +
+    `<span class="hero__eyebrow">${kind === "now" ? '<span class="hero__pulse"></span>' : ""}${escapeHtml(eyebrow)}</span>` +
+    `<span class="hero__title">${escapeHtml(event.title)}</span>` +
+    `<span class="hero__meta">${escapeHtml(meta)}</span>` +
+    `<span class="hero__stage">${escapeHtml(category?.label ?? "Other")}</span>` +
+    (progress != null
+      ? `<span class="hero__bar" role="img" aria-label="${progress} percent elapsed"><span style="width:${progress}%"></span></span>`
+      : "") +
+    `</button>`
+  );
+}
 
-  $("#stats").innerHTML = tiles
-    .map(
-      (tile) => `
-      <div class="stat${tile.tone ? ` stat--${tile.tone}` : ""}">
-        <p class="stat__value">${tile.value}${tile.unit ? `<span class="stat__unit">${tile.unit}</span>` : ""}</p>
-        <p class="stat__label">${tile.label}</p>
-        <p class="stat__note">${escapeHtml(tile.note)}</p>
-        ${
-          tile.meter != null
-            ? `<div class="stat__meter" role="img" aria-label="${tile.meter} percent of the cycle elapsed"><span style="width:${tile.meter}%"></span></div>`
-            : ""
-        }
-      </div>`,
-    )
-    .join("");
-
-  $("#next-up").innerHTML = next
-    ? `<span class="nextup__label">Next up</span>` +
-      `<button type="button" class="nextup__btn" data-action="open-event" data-event-id="${escapeHtml(next.id)}">` +
-      `<span class="nextup__title">${escapeHtml(next.title)}</span>` +
-      `<span class="nextup__when">${escapeHtml(formatDay(next.start))} · ${escapeHtml(relativeLabel(next.start, today))}</span>` +
-      `</button>`
-    : "";
+function heroEmpty(eyebrow, title, meta) {
+  return (
+    `<div class="hero__btn is-empty">` +
+    `<span class="hero__eyebrow">${escapeHtml(eyebrow)}</span>` +
+    `<span class="hero__title">${escapeHtml(title)}</span>` +
+    `<span class="hero__meta">${escapeHtml(meta)}</span>` +
+    `</div>`
+  );
 }
 
 /* ---------------------------------------------------------------- *
@@ -867,11 +821,6 @@ function onKeydown(keyEvent) {
   if (keyEvent.key === "Escape") {
     if (drawer?.isOpen) drawer.close();
     else if (typing) document.activeElement.blur();
-    return;
-  }
-  if (keyEvent.key === "/" && !typing) {
-    keyEvent.preventDefault();
-    $("#search").focus();
     return;
   }
   if (typing || keyEvent.metaKey || keyEvent.ctrlKey || keyEvent.altKey) return;

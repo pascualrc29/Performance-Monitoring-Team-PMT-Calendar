@@ -9,7 +9,7 @@ import {
   addDays, diffDays, endOfMonth, formatDayLong, formatRange, formatTime,
   isWeekend, spanDays, startOfMonth, startOfWeek, WEEKDAYS_MIN, WEEKDAYS_SHORT,
 } from "../dates.js";
-import { packLanes } from "../store.js";
+import { packLanes, paintStage } from "../store.js";
 
 const VISIBLE_LANES = 4;
 
@@ -181,7 +181,7 @@ function renderBar({ segment, lane, weekStart, weekEnd, today, category, hidden 
   bar.style.setProperty("--col", String(column));
   bar.style.setProperty("--span", String(span));
   bar.style.setProperty("--lane", String(lane + 1));
-  bar.style.setProperty("--series", `var(--cat-${event.category})`);
+  paintStage(bar, event.category);
 
   bar.dataset.eventId = event.id;
   bar.dataset.action = "open-event";
@@ -200,7 +200,9 @@ function renderBar({ segment, lane, weekStart, weekEnd, today, category, hidden 
     `${event.title}. ${category?.label ?? ""}. ${formatRange(event.start, event.end)}.`,
   );
 
-  if (event.start <= today && today <= event.end) bar.classList.add("is-current");
+  // Ring only the segment that actually holds today — a long activity spans
+  // several weeks, and ringing every row of it is just noise.
+  if (segment.start <= today && today <= segment.end) bar.classList.add("is-current");
 
   return bar;
 }

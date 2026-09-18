@@ -110,6 +110,21 @@ export function eventsInRange(events, startISO, endISO) {
   return events.filter((event) => overlaps(event.start, event.end, startISO, endISO));
 }
 
+/**
+ * Paints a stage's colour AND the ink that reads on it. Always set together:
+ * a mark given `--series` without `--series-ink` falls back to the body ink,
+ * which is unreadable on the darker stages.
+ */
+export function paintStage(element, categoryId) {
+  element.style.setProperty("--series", `var(--cat-${categoryId})`);
+  element.style.setProperty("--series-ink", `var(--cat-${categoryId}-ink)`);
+}
+
+/** The same pair as an inline style attribute, for template strings. */
+export function stageStyle(categoryId) {
+  return `--series: var(--cat-${categoryId}); --series-ink: var(--cat-${categoryId}-ink)`;
+}
+
 /* ---------------------------------------------------------------- *
  * Lane packing — used by the month grid and the timeline
  * ---------------------------------------------------------------- */

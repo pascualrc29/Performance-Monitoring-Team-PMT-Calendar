@@ -6,7 +6,7 @@
 import {
   formatDay, formatDuration, formatRange, formatTime, relativeLabel, spanDays,
 } from "./dates.js";
-import { download, googleAddUrl, LIFECYCLE_LABEL, toICS } from "./store.js";
+import { download, googleAddUrl, LIFECYCLE_LABEL, stageStyle, toICS } from "./store.js";
 
 const FOCUSABLE =
   'a[href], button:not([disabled]), input, select, textarea, [tabindex]:not([tabindex="-1"])';
@@ -125,7 +125,7 @@ function template(event, { calendar, categoryById, today }) {
   ].filter(Boolean);
 
   return `
-    <header class="drawer__head" style="--series: var(--cat-${event.category})">
+    <header class="drawer__head" style="${stageStyle(event.category)}">
       <div class="drawer__head-row">
         <span class="tag tag--series">${escapeHtml(category?.short ?? "Other")}</span>
         <button type="button" class="iconbtn" data-drawer-close aria-label="Close activity details">

@@ -129,22 +129,37 @@
     </header>
 
     <main class="shell">
-      <section class="overview" aria-label="Cycle at a glance">
-        <div class="stats" id="stats"></div>
-        <div class="nextup" id="next-up"></div>
+      <section class="overview" aria-label="At a glance">
+        <div class="hero hero--now" id="hero-now"></div>
+        <div class="hero hero--next" id="hero-next"></div>
       </section>
 
       <section class="toolbar" aria-label="Calendar controls">
         <div class="toolbar__row toolbar__row--primary">
           <div class="seg" id="view-switch" role="group" aria-label="Choose a view"></div>
 
-          <div class="nav" id="month-nav">
-            <button class="iconbtn iconbtn--sm" id="nav-prev" type="button" aria-label="Previous month">
-              <svg viewBox="0 0 20 20" aria-hidden="true"><path d="M12.5 4.5 7 10l5.5 5.5" /></svg>
-            </button>
-            <button class="btn btn--sm" id="nav-today" type="button">Today</button>
-            <button class="iconbtn iconbtn--sm" id="nav-next" type="button" aria-label="Next month">
-              <svg viewBox="0 0 20 20" aria-hidden="true"><path d="M7.5 4.5 13 10l-5.5 5.5" /></svg>
+          <div class="navgroup">
+            <div class="nav" id="month-nav">
+              <button class="iconbtn iconbtn--sm" id="nav-prev" type="button" aria-label="Previous month">
+                <svg viewBox="0 0 20 20" aria-hidden="true"><path d="M12.5 4.5 7 10l5.5 5.5" /></svg>
+              </button>
+              <button class="btn btn--sm" id="nav-today" type="button">Today</button>
+              <button class="iconbtn iconbtn--sm" id="nav-next" type="button" aria-label="Next month">
+                <svg viewBox="0 0 20 20" aria-hidden="true"><path d="M7.5 4.5 13 10l-5.5 5.5" /></svg>
+              </button>
+            </div>
+
+            <button
+              class="iconbtn iconbtn--sm btn--refresh"
+              id="refresh"
+              type="button"
+              aria-label="Refresh the schedule"
+              title="Re-read the published schedule. The mirror of the Google Calendar is updated twice a day; this picks up the latest copy without reloading the page."
+            >
+              <svg class="btn__icon--spin" viewBox="0 0 20 20" aria-hidden="true">
+                <path d="M16.5 8.2A6.6 6.6 0 1 0 16 13" />
+                <path d="M16.9 3.6v4.7h-4.7" />
+              </svg>
             </button>
           </div>
 
@@ -171,46 +186,9 @@
 
           <div class="toolbar__spacer"></div>
 
-          <div class="menu">
-            <button
-              class="btn btn--sm btn--refresh"
-              id="refresh"
-              type="button"
-              title="Re-read the published schedule. The mirror of the Google Calendar is updated twice a day; this picks up the latest copy without reloading the page."
-            >
-              <svg class="btn__icon btn__icon--spin" viewBox="0 0 20 20" aria-hidden="true">
-                <path d="M16.5 8.2A6.6 6.6 0 1 0 16 13" />
-                <path d="M16.9 3.6v4.7h-4.7" />
-              </svg>
-              Refresh
-            </button>
-            <button class="btn btn--sm" id="export-ics" type="button" title="Download the activities in view as an iCalendar file">
-              <svg class="btn__icon" viewBox="0 0 20 20" aria-hidden="true"><path d="M10 3v9m0 0 3.4-3.4M10 12 6.6 8.6M4 15.5h12" /></svg>
-              .ics
-            </button>
-            <button class="btn btn--sm" id="export-csv" type="button" title="Download the activities in view as a spreadsheet">CSV</button>
-            <button class="btn btn--sm" id="print" type="button" title="Print or save as PDF">Print</button>
-          </div>
         </div>
 
         <div class="toolbar__row toolbar__row--filters">
-          <div class="search">
-            <svg class="search__icon" viewBox="0 0 20 20" aria-hidden="true">
-              <circle cx="8.8" cy="8.8" r="5.2" /><path d="m12.8 12.8 4 4" />
-            </svg>
-            <input
-              class="search__input"
-              id="search"
-              type="search"
-              placeholder="Search activities, units, outputs…  (press /)"
-              aria-label="Search activities"
-              autocomplete="off"
-            />
-            <button class="search__clear" id="search-clear" type="button" aria-label="Clear search" hidden>
-              <svg viewBox="0 0 20 20" aria-hidden="true"><path d="M6 6l8 8M14 6l-8 8" /></svg>
-            </button>
-          </div>
-
           <label class="field">
             <span class="field__label">Responsible unit</span>
             <select class="select" id="unit-filter"></select>
@@ -254,7 +232,6 @@
           <li><kbd>1</kbd><kbd>2</kbd><kbd>3</kbd><kbd>4</kbd> switch views</li>
           <li><kbd>←</kbd><kbd>→</kbd> change month</li>
           <li><kbd>T</kbd> jump to today</li>
-          <li><kbd>/</kbd> search</li>
           <li><kbd>Esc</kbd> close details</li>
         </ul>
       </section>

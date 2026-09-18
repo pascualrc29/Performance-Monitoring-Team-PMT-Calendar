@@ -15,7 +15,7 @@ table.
 | --- | --- |
 | **Month** | The familiar calendar grid. Multi-day activities run as continuous bars across the weeks, packed into lanes so nothing overlaps. |
 | **Timeline** | A Gantt chart of the whole cycle. Activities are grouped into SPMS stages (or by responsible unit), with a today line, elapsed-time shading on running activities, and four zoom levels from *Fit all* down to day resolution. |
-| **Agenda** | A chronological list grouped by month, with the responsible units and the expected output of each activity. |
+| **Agenda** | A chronological list grouped by month, with the responsible units and the expected output of each activity. This is what a phone opens on, since a month grid is unreadable at that width. |
 | **Table** | Every field in a sortable, printable table — also the accessible fallback for the two visual views. |
 
 Across all of them:
@@ -24,7 +24,6 @@ Across all of them:
   opens on the current one rather than dumping all 14 months at once. Choose the
   other year, or *Whole cycle*, from the dropdown. In the month grid the same
   dropdown jumps years, and it follows you as you page through the months.
-- **Search** activity names, responsible units, outputs and meeting notes.
 - **Filter** by SPMS stage (the legend doubles as the filter), by responsible
   unit, and by status (running / upcoming / completed).
 - **Open any activity** for its schedule, duration, responsible units, expected
@@ -34,10 +33,8 @@ Across all of them:
   says what changed — or that nothing did. See
   [Refreshing the schedule](#refreshing-the-schedule) for what it can and
   cannot reach.
-- **Export** what is on screen as `.ics` or `.csv`, or print it (the print
-  stylesheet drops the chrome and keeps the schedule). An export covers what the
-  period and filters currently show, and the confirmation says how many
-  activities went into the file.
+- **Add any activity to your own calendar** from its detail panel, as a Google
+  Calendar link or an `.ics` download.
 - **Share a link.** The view, month, zoom, grouping and every filter live in the
   URL hash, so `#view=timeline&zoom=weeks&cat=targets` is a bookmarkable link.
 - **Install it** on a phone, tablet or desktop and use it offline — see
@@ -54,7 +51,6 @@ Across all of them:
 | <kbd>1</kbd> … <kbd>4</kbd> | Month / Timeline / Agenda / Table |
 | <kbd>←</kbd> <kbd>→</kbd> | Previous / next month |
 | <kbd>T</kbd> | Jump to today |
-| <kbd>/</kbd> | Focus the search box |
 | <kbd>Esc</kbd> | Close the activity panel |
 
 ## Installing it
@@ -202,6 +198,15 @@ pulled from a font CDN: **Archivo** for the masthead, headings and figures, and
 Both are SIL OFL 1.1. One file covers every weight, 60 KB for the pair, so there
 is no third-party request on page load and the type survives offline without the
 service worker having to special-case a CDN.
+
+**Stage colour and its ink.** Each stage publishes both its colour and the ink
+that reads on it, computed at build time by `inkFor()` in
+`scripts/build-data.mjs` — white or near-black, whichever clears 4.5:1. That is
+what lets a bar, a chip or a stage pill be filled with solid stage colour
+instead of a pale tint and still carry a legible label. The pair is always set
+together through `paintStage()` / `stageStyle()` in `assets/js/store.js`; a mark
+given the colour without the ink falls back to body ink and goes unreadable on
+the darker stages.
 
 **Hierarchy.** Elevation is spent by role rather than stamped on every block:
 the calendar is the page's subject, so it is the only surface that is lifted.

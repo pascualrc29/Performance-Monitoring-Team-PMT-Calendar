@@ -9,7 +9,7 @@ import {
   formatDay, formatDuration, formatMonthYear, formatRange, formatTime,
   relativeLabel, startOfMonth,
 } from "../dates.js";
-import { LIFECYCLE_LABEL } from "../store.js";
+import { LIFECYCLE_LABEL, paintStage, stageStyle } from "../store.js";
 
 /* ---------------------------------------------------------------- *
  * Agenda
@@ -69,7 +69,7 @@ function agendaCard(event, today, categoryById) {
   const card = document.createElement("button");
   card.type = "button";
   card.className = `acard is-${event.lifecycle}`;
-  card.style.setProperty("--series", `var(--cat-${event.category})`);
+  paintStage(card, event.category);
   card.dataset.eventId = event.id;
   card.dataset.action = "open-event";
 
@@ -213,7 +213,7 @@ export function renderTable(container, { events, categoryById, sort, onSort }) {
         : "";
 
     tr.innerHTML =
-      `<th scope="row"><span class="dtable__dot" style="--series: var(--cat-${event.category})"></span>${escapeHtml(event.title)}</th>` +
+      `<th scope="row"><span class="dtable__dot" style="${stageStyle(event.category)}"></span>${escapeHtml(event.title)}</th>` +
       `<td>${escapeHtml(categoryById.get(event.category)?.label ?? "Other")}</td>` +
       `<td>${escapeHtml(formatRange(event.start, event.end))}${timeNote}</td>` +
       `<td class="u-num">${escapeHtml(formatDuration(event.durationDays))}</td>` +

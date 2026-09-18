@@ -180,7 +180,12 @@ html {
 
 body {
   margin: 0;
-  background: var(--page);
+  /* A quiet wash off the masthead rather than one flat fill. */
+  background-color: var(--page);
+  background-image:
+    radial-gradient(120% 60% at 50% 0%, color-mix(in oklab, var(--brand-blue) 10%, transparent), transparent 62%);
+  background-repeat: no-repeat;
+  background-attachment: fixed;
   color: var(--text-primary);
   font-family: var(--font);
   font-size: 15px;
@@ -555,6 +560,11 @@ svg {
   cursor: progress;
 }
 
+.btn--refresh svg {
+  width: 17px;
+  height: 17px;
+}
+
 .btn--refresh.is-busy .btn__icon--spin {
   animation: spin 900ms linear infinite;
 }
@@ -596,185 +606,197 @@ svg {
   gap: 18px;
 }
 
-/* --------------------------------------------------------------- stats */
+/* --------------------------------------------------------------- hero rows
+
+   Two full-width rows instead of a wall of figures: what is running right now,
+   and what is next. "Now" is the loud one — a navy field with the stage colour
+   as a rail — and "next" answers it in the surface tone.                      */
 
 .overview {
   display: grid;
-  gap: 14px;
-  grid-template-columns: minmax(0, 3fr) minmax(0, 1fr);
-  align-items: stretch;
+  gap: 10px;
+  grid-template-columns: minmax(0, 1fr);
 }
 
-/* One continuous ribbon divided by hairlines — four separate cards made every
-   figure look equally important and turned the top of the page into a grid of
-   boxes. */
-.stats {
+.hero {
+  min-width: 0;
+}
+
+.hero__btn {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(178px, 1fr));
+  grid-template-areas:
+    "eyebrow stage"
+    "title   stage"
+    "meta    stage";
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 2px 16px;
+  align-items: center;
+  width: 100%;
+  padding: 15px 18px 16px;
   border: 1px solid var(--border);
+  border-left: 5px solid var(--series, var(--brand-blue));
   border-radius: var(--radius-lg);
   background: var(--surface);
-  overflow: hidden;
+  text-align: left;
+  cursor: pointer;
+  transition: transform 130ms ease, box-shadow 130ms ease;
 }
 
-.stat {
-  padding: 15px 18px 16px;
-  border-left: 1px solid var(--border-faint);
+.hero__btn.is-empty {
+  cursor: default;
+  border-left-color: var(--border-strong);
 }
 
-.stat:first-child {
-  border-left: 0;
+.hero__btn:not(.is-empty):hover {
+  transform: translateY(-1px);
+  box-shadow: var(--shadow);
 }
 
-.stat__value {
+/* The running row is the page's loudest object — it is the only thing on
+   screen that is happening right now. */
+.hero--now .hero__btn {
+  border-color: transparent;
+  background:
+    linear-gradient(100deg, var(--navy-900) 0%, var(--navy-700) 62%, #2352c4 100%);
+  color: var(--text-on-brand);
+  box-shadow: 0 10px 28px -14px rgb(11 31 82 / 0.55);
+}
+
+.hero--now .hero__btn.is-empty {
+  background: var(--surface);
+  color: var(--text-primary);
+  border: 1px solid var(--border);
+  border-left: 5px solid var(--border-strong);
+  box-shadow: none;
+}
+
+.hero--next .hero__btn {
+  border-left-color: var(--gold);
+  background: linear-gradient(100deg, color-mix(in oklab, var(--gold) 17%, var(--surface)), var(--surface) 58%);
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) .hero--next .hero__btn {
+    background: linear-gradient(100deg, var(--surface-2), var(--surface) 60%);
+  }
+}
+
+:root[data-theme="dark"] .hero--next .hero__btn {
+  background: linear-gradient(100deg, var(--surface-2), var(--surface) 60%);
+}
+
+.hero__eyebrow {
+  grid-area: eyebrow;
   display: flex;
-  align-items: baseline;
-  gap: 5px;
+  gap: 7px;
+  align-items: center;
   font-family: var(--font-display);
-  font-size: 2.15rem;
+  font-size: 10.5px;
   font-weight: 700;
-  line-height: 1;
-  letter-spacing: -0.04em;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--text-secondary);
+}
+
+.hero--now .hero__btn:not(.is-empty) .hero__eyebrow {
+  color: var(--gold);
+}
+
+/* A slow pulse, because "running now" is a live fact. */
+.hero__pulse {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: currentColor;
+  box-shadow: 0 0 0 0 currentColor;
+  animation: pulse 2.4s ease-out infinite;
+}
+
+@keyframes pulse {
+  70% {
+    box-shadow: 0 0 0 7px transparent;
+  }
+  100% {
+    box-shadow: 0 0 0 0 transparent;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hero__pulse {
+    animation: none;
+  }
+}
+
+.hero__title {
+  grid-area: title;
+  font-family: var(--font-display);
+  font-size: clamp(1.05rem, 2.1vw, 1.3rem);
+  font-weight: 700;
+  line-height: 1.22;
+  letter-spacing: -0.022em;
+  margin-top: 3px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  line-clamp: 2;
+  -webkit-box-orient: vertical;
+}
+
+.hero__meta {
+  grid-area: meta;
+  margin-top: 2px;
+  font-size: 12.5px;
+  color: var(--text-secondary);
   font-variant-numeric: tabular-nums;
 }
 
-.stat__unit {
-  font-size: 0.95rem;
-  font-weight: 550;
-  color: var(--text-muted);
-  letter-spacing: 0;
+.hero--now .hero__btn:not(.is-empty) .hero__meta {
+  color: var(--text-on-brand-soft);
 }
 
-.stat__label {
-  margin-top: 6px;
-  font-size: 11px;
+.hero__stage {
+  grid-area: stage;
+  justify-self: end;
+  padding: 5px 12px;
+  border-radius: var(--radius-pill);
+  background: var(--series);
+  color: var(--series-ink);
+  font-size: 11.5px;
   font-weight: 700;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-  color: var(--text-secondary);
-}
-
-.stat__note {
-  margin-top: 2px;
-  font-size: 12px;
-  color: var(--text-muted);
-  overflow: hidden;
-  text-overflow: ellipsis;
   white-space: nowrap;
 }
 
-.stat--active .stat__value {
-  color: var(--brand-blue);
-}
-
-/* The one place gold appears in the body: the activity running right now. */
-.stat--active {
-  background: linear-gradient(180deg, color-mix(in oklab, var(--gold) 15%, var(--surface)), var(--surface) 62%);
-}
-
-@media (prefers-color-scheme: dark) {
-  :root:not([data-theme="light"]) .stat--active {
-    background: none;
-    box-shadow: inset 0 2px 0 var(--gold);
-  }
-}
-
-:root[data-theme="dark"] .stat--active {
-  background: none;
-  box-shadow: inset 0 2px 0 var(--gold);
-}
-
-.stat--muted .stat__value {
-  color: var(--text-muted);
-}
-
-.stat--upcoming .stat__value {
-  color: color-mix(in oklab, var(--brand-navy) 78%, var(--text-primary));
-}
-
-.stat__meter {
-  margin-top: 9px;
-  height: 5px;
+.hero__bar {
+  grid-area: bar;
+  display: block;
+  grid-column: 1 / -1;
+  height: 4px;
+  margin-top: 11px;
   border-radius: var(--radius-pill);
-  background: var(--surface-sunken);
+  background: rgb(255 255 255 / 0.22);
   overflow: hidden;
 }
 
-.stat__meter span {
+.hero--now .hero__btn:has(.hero__bar) {
+  grid-template-areas:
+    "eyebrow stage"
+    "title   stage"
+    "meta    stage"
+    "bar     bar";
+}
+
+.hero__bar span {
   display: block;
   height: 100%;
   border-radius: inherit;
-  background: linear-gradient(90deg, var(--brand-navy), var(--brand-blue));
+  background: var(--gold);
 }
 
-.nextup {
-  display: flex;
-  flex-direction: column;
-  gap: 6px;
-  justify-content: center;
-  padding: 15px 18px;
-  border: 1px solid var(--border);
-  border-radius: var(--radius-lg);
-  border-left: 3px solid var(--gold);
-  background: linear-gradient(
-    150deg,
-    color-mix(in oklab, var(--brand-yellow) 22%, var(--surface)),
-    var(--surface) 70%
-  );
-  box-shadow: var(--shadow-sm);
-}
-
-@media (prefers-color-scheme: dark) {
-  :root:not([data-theme="light"]) .nextup {
-    background: linear-gradient(150deg, var(--surface-2), var(--surface) 72%);
+@media (min-width: 900px) {
+  .overview {
+    grid-template-columns: minmax(0, 1.25fr) minmax(0, 1fr);
   }
-}
-
-:root[data-theme="dark"] .nextup {
-  background: linear-gradient(150deg, var(--surface-2), var(--surface) 72%);
-}
-
-.nextup:empty {
-  display: none;
-}
-
-.nextup__label {
-  font-family: var(--font-display);
-  font-size: 11px;
-  font-weight: 700;
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
-  color: var(--text-secondary);
-}
-
-.nextup__btn {
-  display: grid;
-  gap: 3px;
-  padding: 0;
-  border: 0;
-  background: none;
-  text-align: left;
-  cursor: pointer;
-}
-
-.nextup__title {
-  display: block;
-  font-family: var(--font-display);
-  font-size: 15.5px;
-  font-weight: 700;
-  line-height: 1.25;
-  letter-spacing: -0.015em;
-}
-
-.nextup__btn:hover .nextup__title {
-  text-decoration: underline;
-  text-decoration-thickness: 1.5px;
-  text-underline-offset: 2px;
-}
-
-.nextup__when {
-  font-size: 12.5px;
-  color: var(--text-secondary);
 }
 
 /* --------------------------------------------------------------- toolbar */
@@ -834,6 +856,14 @@ svg {
   font-size: 12.5px;
 }
 
+/* The arrows and Refresh travel together, so a narrow screen wraps them as one
+   group instead of stranding Refresh on a line of its own. */
+.navgroup {
+  display: inline-flex;
+  gap: 6px;
+  align-items: center;
+}
+
 .nav {
   display: inline-flex;
   gap: 6px;
@@ -885,11 +915,6 @@ svg {
   align-items: center;
 }
 
-.menu {
-  display: inline-flex;
-  gap: 6px;
-}
-
 .field {
   display: inline-grid;
   gap: 3px;
@@ -918,94 +943,6 @@ svg {
   color: var(--text-primary);
   font: inherit;
   font-size: 13.5px;
-}
-
-.search {
-  position: relative;
-  flex: 1 1 280px;
-  min-width: 220px;
-}
-
-.search__icon {
-  position: absolute;
-  left: 11px;
-  top: 50%;
-  translate: 0 -50%;
-  width: 16px;
-  height: 16px;
-  color: var(--text-muted);
-  pointer-events: none;
-}
-
-.search__input {
-  width: 100%;
-  padding: 9px 36px 9px 34px;
-  border: 1px solid var(--border);
-  border-radius: var(--radius);
-  background: var(--surface-1);
-  color: var(--text-primary);
-  font: inherit;
-  font-size: 13.5px;
-}
-
-.search__input::placeholder {
-  color: var(--text-muted);
-}
-
-.search__input:focus {
-  background: var(--surface);
-}
-
-.search__input::-webkit-search-cancel-button {
-  display: none;
-}
-
-.search__clear {
-  position: absolute;
-  right: 7px;
-  top: 50%;
-  translate: 0 -50%;
-  display: grid;
-  place-items: center;
-  width: 24px;
-  height: 24px;
-  border: 0;
-  border-radius: var(--radius-sm);
-  background: none;
-  color: var(--text-muted);
-  cursor: pointer;
-}
-
-.search__clear:hover {
-  background: var(--surface-sunken);
-  color: var(--text-primary);
-}
-
-.search__clear svg {
-  width: 14px;
-  height: 14px;
-}
-
-/* The swipe hint is for touch screens in the month grid only — a mouse user
-   has the arrow buttons right there. */
-.swipehint {
-  display: none;
-  gap: 7px;
-  align-items: center;
-  justify-content: center;
-  font-size: 12px;
-  color: var(--text-muted);
-}
-
-.swipehint svg {
-  width: 14px;
-  height: 14px;
-}
-
-@media (hover: none) and (max-width: 720px) {
-  .view[data-view="month"] ~ .swipehint {
-    display: flex;
-  }
 }
 
 /* --------------------------------------------------------------- legend */
@@ -1058,9 +995,15 @@ svg {
 }
 
 .chip.is-active {
-  background: color-mix(in oklab, var(--series) 13%, var(--surface));
+  background: var(--series);
   border-color: var(--series);
-  color: var(--text-primary);
+  color: var(--series-ink);
+  font-weight: 650;
+}
+
+.chip.is-active .chip__swatch {
+  background: var(--series-ink);
+  opacity: 0.85;
 }
 
 .chip.is-dimmed {
@@ -1071,7 +1014,7 @@ svg {
   width: 11px;
   height: 11px;
   flex: none;
-  border-radius: 3px;
+  border-radius: 50%;
   background: var(--series);
 }
 
@@ -1084,7 +1027,8 @@ svg {
 }
 
 .chip.is-active .chip__count {
-  color: var(--text-secondary);
+  color: var(--series-ink);
+  opacity: 0.8;
 }
 
 /* --------------------------------------------------------------- tags & pills */
@@ -1348,16 +1292,21 @@ kbd {
   display: grid;
   grid-template-columns: repeat(7, minmax(0, 1fr));
   border-bottom: 1px solid var(--border);
-  background: var(--surface-2);
+  background: linear-gradient(
+    180deg,
+    color-mix(in oklab, var(--navy-700) 11%, var(--surface-2)),
+    var(--surface-2)
+  );
 }
 
 .month__weekday {
-  padding: 8px 10px;
+  padding: 9px 10px;
+  font-family: var(--font-display);
   font-size: 11px;
   font-weight: 700;
-  letter-spacing: 0.09em;
+  letter-spacing: 0.12em;
   text-transform: uppercase;
-  color: var(--text-muted);
+  color: color-mix(in oklab, var(--navy-700) 62%, var(--text-secondary));
 }
 
 .month__weekday.is-weekend {
@@ -1462,8 +1411,8 @@ kbd {
   z-index: 1;
 }
 
-/* Month bars are a tinted chip with a solid stage-coloured edge, so the label
-   sits on ink-on-surface contrast rather than on the series colour. */
+/* Solid stage colour, with the ink computed per stage at build time so the
+   label clears 4.5:1 on it — vivid without guessing. */
 .bar {
   grid-column: var(--col) / span var(--span);
   grid-row: var(--lane);
@@ -1471,14 +1420,13 @@ kbd {
   align-items: center;
   min-width: 0;
   margin: 0 1px;
-  padding: 0 8px 0 7px;
+  padding: 0 9px;
   border: 0;
-  border-left: 3px solid var(--series);
   border-radius: 5px;
-  background: color-mix(in oklab, var(--series) 15%, var(--surface));
-  color: var(--text-primary);
+  background: var(--series);
+  color: var(--series-ink);
   font-size: 12px;
-  font-weight: 550;
+  font-weight: 600;
   line-height: 1;
   text-align: left;
   cursor: pointer;
@@ -1487,8 +1435,8 @@ kbd {
 }
 
 .bar:hover {
-  background: color-mix(in oklab, var(--series) 26%, var(--surface));
-  box-shadow: var(--shadow-sm);
+  filter: brightness(1.12) saturate(1.05);
+  box-shadow: 0 2px 8px -2px color-mix(in oklab, var(--series) 70%, transparent);
 }
 
 .bar:active {
@@ -1502,10 +1450,9 @@ kbd {
 }
 
 .bar.is-continues-left {
-  border-left-width: 0;
   border-top-left-radius: 2px;
   border-bottom-left-radius: 2px;
-  padding-left: 6px;
+  padding-left: 7px;
 }
 
 .bar.is-continues-right {
@@ -1515,20 +1462,29 @@ kbd {
   padding-right: 12px;
 }
 
+/* A finished activity steps back to a tint of its stage rather than fading as
+   a whole — at 50% opacity the ink went with it and the label stopped reading. */
 .bar.is-done {
-  opacity: 0.62;
+  background: color-mix(in oklab, var(--series) 24%, var(--surface));
+  color: var(--text-secondary);
+  font-weight: 550;
+}
+
+.bar.is-done:hover {
+  background: color-mix(in oklab, var(--series) 36%, var(--surface));
+  filter: none;
 }
 
 .bar.is-current {
-  box-shadow: inset 0 0 0 1.5px color-mix(in oklab, var(--series) 62%, transparent);
-  font-weight: 650;
+  box-shadow: 0 0 0 2px var(--surface), 0 0 0 3.5px var(--gold);
+  font-weight: 700;
 }
 
 .bar.is-timed {
   background: var(--surface);
-  border-left-color: transparent;
-  box-shadow: inset 0 0 0 1px var(--border);
-  padding-left: 6px;
+  color: var(--text-primary);
+  box-shadow: inset 0 0 0 1.5px var(--series);
+  padding-left: 7px;
 }
 
 .bar.is-timed::before {
@@ -2002,7 +1958,7 @@ kbd {
   margin: 0;
   padding: 12px 20px 13px;
   border: 0;
-  border-left: 3px solid var(--series);
+  border-left: 4px solid var(--series);
   background: none;
   text-align: left;
   cursor: pointer;
@@ -2065,6 +2021,13 @@ kbd {
   flex-wrap: wrap;
   gap: 5px;
   margin-top: 1px;
+}
+
+.acard .tag--series {
+  background: var(--series);
+  color: var(--series-ink);
+  box-shadow: none;
+  font-weight: 650;
 }
 
 .acard__output {
@@ -2520,13 +2483,37 @@ kbd {
     font-size: 11px;
   }
 
-  .nextup {
-    padding: 12px 14px;
+  .hero__btn {
+    grid-template-areas:
+      "eyebrow"
+      "title"
+      "meta"
+      "stage";
+    grid-template-columns: minmax(0, 1fr);
+    gap: 3px;
+    padding: 13px 15px 14px;
   }
 
-  .nextup__title {
-    font-size: 15px;
+  .hero--now .hero__btn:has(.hero__bar) {
+    grid-template-areas:
+      "eyebrow"
+      "title"
+      "meta"
+      "stage"
+      "bar";
   }
+
+  .hero__stage {
+    justify-self: start;
+    margin-top: 7px;
+    padding: 4px 10px;
+    font-size: 11px;
+  }
+
+  .hero__title {
+    font-size: 1.1rem;
+  }
+
 
   .acard {
     grid-template-columns: 44px minmax(0, 1fr);
@@ -2565,6 +2552,14 @@ kbd {
     order: 2;
   }
 
+  .navgroup {
+    order: 2;
+  }
+
+  .select--period {
+    max-width: 104px;
+  }
+
   .seg {
     order: 3;
     width: 100%;
@@ -2580,16 +2575,6 @@ kbd {
     width: 100%;
   }
 
-  .menu {
-    order: 5;
-    width: 100%;
-  }
-
-  .menu .btn {
-    flex: 1;
-    justify-content: center;
-  }
-
   .toolbar__spacer {
     display: none;
   }
@@ -2600,8 +2585,7 @@ kbd {
     height: 40px;
   }
 
-  .nav .btn--sm,
-  .menu .btn--sm {
+  .nav .btn--sm {
     min-height: 40px;
   }
 

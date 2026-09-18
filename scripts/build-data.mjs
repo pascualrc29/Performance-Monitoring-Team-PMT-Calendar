@@ -92,6 +92,33 @@ const CATEGORIES = [
   },
 ];
 
+/**
+ * Relative luminance and contrast ratio, so each stage can publish the ink that
+ * actually reads on it. A solid stage-coloured bar with white text would fail
+ * on the gold and the cyan; picking per stage lets the bars stay vivid without
+ * guessing.
+ */
+function luminance(hex) {
+  const channels = [1, 3, 5].map((i) => parseInt(hex.slice(i, i + 2), 16) / 255);
+  const linear = channels.map((c) => (c <= 0.04045 ? c / 12.92 : ((c + 0.055) / 1.055) ** 2.4));
+  return 0.2126 * linear[0] + 0.7152 * linear[1] + 0.0722 * linear[2];
+}
+
+function contrast(a, b) {
+  const [x, y] = [luminance(a), luminance(b)].sort((m, n) => n - m);
+  return (x + 0.05) / (y + 0.05);
+}
+
+const INK_LIGHT = "#ffffff";
+const INK_DARK = "#0c1428";
+
+/** Whichever of white / near-black clears 4.5:1 on this colour; the better one wins. */
+function inkFor(background) {
+  const onWhite = contrast(background, INK_LIGHT);
+  const onDark = contrast(background, INK_DARK);
+  return onWhite >= onDark ? INK_LIGHT : INK_DARK;
+}
+
 const FALLBACK_CATEGORY = {
   id: "other",
   label: "Other Activities",
@@ -399,6 +426,8 @@ const categories = [...CATEGORIES, FALLBACK_CATEGORY]
   // `test` is a build-time regex; it has no business in the published payload.
   .map(({ test: _regex, ...rest }) => ({
     ...rest,
+    ink: inkFor(rest.light),
+    inkDark: inkFor(rest.dark),
     count: events.filter((event) => event.category === rest.id).length,
   }));
 
