@@ -158,9 +158,20 @@ Anything else in the description shows up as agenda notes on the activity panel.
 ## Deployment
 
 `.github/workflows/deploy-pages.yml` publishes the repository root to GitHub
-Pages on every push to `main`. In the repository settings, set
-**Pages → Build and deployment → Source** to **GitHub Actions**. Nothing else
-to configure; `.nojekyll` keeps Pages from reprocessing the files.
+Pages on every push to the repository's **default branch** — whatever it is
+called. It reads the default branch at run time rather than hard-coding `main`,
+so renaming the branch, or later promoting a different one, does not break the
+deploy.
+
+**One-time setup:** in the repository settings, set
+**Pages → Build and deployment → Source** to **GitHub Actions**. Nothing else to
+configure; `.nojekyll` keeps Pages from reprocessing the files.
+
+**To redeploy:** push to the default branch. If nothing changed but you want to
+republish anyway, go to **Actions → Deploy to GitHub Pages → Run workflow**.
+Each deploy stamps the service worker with the commit SHA, so installed copies
+land in a fresh cache instead of serving the old shell; anyone with the page
+already open gets a "A new version is ready" notice and reloads into it.
 
 ## How it is put together
 
