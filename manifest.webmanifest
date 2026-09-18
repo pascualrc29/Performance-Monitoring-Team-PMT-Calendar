@@ -1,0 +1,62 @@
+{
+  "name": "PMT Calendar — Baliwag Water District",
+  "short_name": "PMT Calendar",
+  "description": "The Strategic Performance Management System cycle of the Performance Monitoring Team, Baliwag Water District, as an interactive calendar and Gantt timeline.",
+  "id": "/",
+  "start_url": "./index.html",
+  "scope": "./",
+  "display": "standalone",
+  "display_override": ["window-controls-overlay", "standalone", "minimal-ui"],
+  "orientation": "any",
+  "background_color": "#eaeef7",
+  "theme_color": "#183c90",
+  "lang": "en-PH",
+  "dir": "ltr",
+  "categories": ["productivity", "business", "utilities"],
+  "icons": [
+    {
+      "src": "assets/img/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "assets/img/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "assets/img/icon-maskable-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "maskable"
+    },
+    {
+      "src": "assets/img/icon-maskable-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "Timeline",
+      "short_name": "Timeline",
+      "description": "The SPMS cycle as a Gantt chart",
+      "url": "./index.html#view=timeline&zoom=weeks"
+    },
+    {
+      "name": "Agenda",
+      "short_name": "Agenda",
+      "description": "Activities in date order",
+      "url": "./index.html#view=agenda"
+    },
+    {
+      "name": "This month",
+      "short_name": "This month",
+      "description": "The month grid on today",
+      "url": "./index.html#view=month"
+    }
+  ]
+}

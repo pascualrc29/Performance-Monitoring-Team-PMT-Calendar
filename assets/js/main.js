@@ -6,13 +6,14 @@
  */
 
 import {
-  addMonths, diffDays, formatDay, formatMonthYear, relativeLabel,
-  spanDays, startOfMonth,
+  addMonths, diffDays, formatDay, MONTHS, relativeLabel, spanDays, startOfMonth,
 } from "./dates.js";
 import {
-  download, filterEvents, LIFECYCLE_LABEL, loadCalendar, toCSV, toICS,
+  ALL_YEARS, download, filterEvents, LIFECYCLE_LABEL, loadCalendar, toCSV,
+  toICS, yearsCovered,
 } from "./store.js";
 import { createDetailDrawer } from "./detail.js";
+import { initPWA } from "./pwa.js";
 import { renderMonth } from "./views/month.js";
 import { renderGantt, ZOOM_LEVELS } from "./views/gantt.js";
 import { renderAgenda, renderTable } from "./views/list.js";
@@ -40,31 +41,30 @@ let refreshing = false;
  * Theme
  * ---------------------------------------------------------------- */
 
+/**
+ * Light is the default — the inline script in index.html has already stamped
+ * data-theme before first paint, so this only has to keep the switch in step.
+ */
 function initTheme() {
-  const stored = localStorage.getItem(THEME_KEY);
-  if (stored === "light" || stored === "dark") {
-    document.documentElement.dataset.theme = stored;
-  }
-  syncThemeButton();
+  syncThemeSwitch();
   $("#theme-toggle").addEventListener("click", () => {
-    const current =
-      document.documentElement.dataset.theme ??
-      (window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light");
-    const next = current === "dark" ? "light" : "dark";
+    const next = document.documentElement.dataset.theme === "dark" ? "light" : "dark";
     document.documentElement.dataset.theme = next;
-    localStorage.setItem(THEME_KEY, next);
-    syncThemeButton();
+    try {
+      localStorage.setItem(THEME_KEY, next);
+    } catch {
+      // A private window can refuse storage; the choice then lasts this visit.
+    }
+    syncThemeSwitch();
     if (state?.view === "timeline") render();
   });
 }
 
-function syncThemeButton() {
-  const isDark =
-    (document.documentElement.dataset.theme ??
-      (window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light")) === "dark";
+function syncThemeSwitch() {
+  const isDark = document.documentElement.dataset.theme === "dark";
   const button = $("#theme-toggle");
-  button.setAttribute("aria-label", isDark ? "Switch to light theme" : "Switch to dark theme");
-  button.dataset.mode = isDark ? "dark" : "light";
+  button.setAttribute("aria-checked", String(isDark));
+  button.setAttribute("aria-label", isDark ? "Dark mode, on" : "Dark mode, off");
 }
 
 /* ---------------------------------------------------------------- *
@@ -74,9 +74,13 @@ function syncThemeButton() {
 function defaultState() {
   const today = data.today;
   const inRange = today >= data.range.start && today <= data.range.end;
+  const years = yearsCovered(data.range);
   return {
     view: "month",
     anchor: startOfMonth(inRange ? today : data.range.start),
+    // Open on the year we are in, not on the whole cycle — the timeline of a
+    // 14-month cycle is unreadable as a first impression.
+    period: years.includes(today.slice(0, 4)) ? today.slice(0, 4) : years[0],
     zoom: "fit",
     groupBy: "category",
     query: "",
@@ -102,6 +106,9 @@ function readHash() {
 
   const group = params.get("group");
   if (group === "unit" || group === "category") next.groupBy = group;
+
+  const period = params.get("y");
+  if (period === ALL_YEARS || yearsCovered(data.range).includes(period)) next.period = period;
 
   next.query = params.get("q") ?? "";
 
@@ -134,6 +141,7 @@ function writeHash({ replace = false } = {}) {
     params.set("group", state.groupBy);
   }
   if (state.view === "table") params.set("sort", `${state.sort.key}:${state.sort.direction}`);
+  params.set("y", state.period);
   if (state.query.trim()) params.set("q", state.query.trim());
   if (state.categories.size) params.set("cat", [...state.categories].join(","));
   if (state.units.size) params.set("unit", [...state.units].join("~"));
@@ -151,6 +159,14 @@ function writeHash({ replace = false } = {}) {
 
 async function boot() {
   initTheme();
+  initPWA({
+    onUpdate: (apply) => {
+      // Say so before the reload, so the jump is not a surprise.
+      toast("A new version is ready", "Reloading to pick it up\u2026");
+      setTimeout(apply, 1200);
+    },
+    onMessage: toast,
+  });
 
   try {
     data = await loadCalendar();
@@ -242,10 +258,16 @@ function buildChrome() {
     switcher.append(button);
   }
 
-  /* month nav */
-  $("#nav-prev").addEventListener("click", () => setState({ anchor: addMonths(state.anchor, -1) }));
-  $("#nav-next").addEventListener("click", () => setState({ anchor: addMonths(state.anchor, 1) }));
-  $("#nav-today").addEventListener("click", () => setState({ anchor: startOfMonth(data.today) }));
+  /* month nav — moving to another year moves the period control with it, so
+     the two never contradict each other */
+  const goToMonth = (anchor) => setState({ anchor, ...periodFollowing(anchor) });
+  $("#nav-prev").addEventListener("click", () => goToMonth(addMonths(state.anchor, -1)));
+  $("#nav-next").addEventListener("click", () => goToMonth(addMonths(state.anchor, 1)));
+  $("#nav-today").addEventListener("click", () => goToMonth(startOfMonth(data.today)));
+
+  /* period */
+  const periodSelect = $("#period-select");
+  periodSelect.addEventListener("change", () => setPeriod(periodSelect.value));
 
   /* timeline controls */
   const zoomGroup = $("#zoom-switch");
@@ -311,9 +333,12 @@ function buildChrome() {
       toICS(events, data.calendar, data.categoryById),
       "text/calendar",
     );
+    announceExport(events.length, "iCalendar file");
   });
   $("#export-csv").addEventListener("click", () => {
-    download(`bwd-pmt-calendar-${data.today}.csv`, toCSV(visibleEvents(), data.categoryById), "text/csv");
+    const events = visibleEvents();
+    download(`bwd-pmt-calendar-${data.today}.csv`, toCSV(events, data.categoryById), "text/csv");
+    announceExport(events.length, "spreadsheet");
   });
   $("#print").addEventListener("click", () => window.print());
 
@@ -334,7 +359,67 @@ function buildChrome() {
     if (event) drawer.open(event);
   });
 
+  initSwipe();
   syncControls();
+}
+
+/**
+ * Month navigation by swipe, which on a phone is the only obvious way to move
+ * between months. Horizontal intent has to beat vertical clearly, or every
+ * scroll down the page would change the month.
+ */
+const SWIPE_MIN_PX = 55;
+const SWIPE_RATIO = 1.4;
+
+function initSwipe() {
+  const view = $("#view");
+  let startX = 0;
+  let startY = 0;
+  let tracking = false;
+  let swiped = false;
+
+  view.addEventListener(
+    "touchstart",
+    (event) => {
+      if (state.view !== "month" || event.touches.length !== 1) return;
+      tracking = true;
+      swiped = false;
+      startX = event.touches[0].clientX;
+      startY = event.touches[0].clientY;
+    },
+    { passive: true },
+  );
+
+  view.addEventListener(
+    "touchend",
+    (event) => {
+      if (!tracking) return;
+      tracking = false;
+      const dx = event.changedTouches[0].clientX - startX;
+      const dy = event.changedTouches[0].clientY - startY;
+      if (Math.abs(dx) < SWIPE_MIN_PX || Math.abs(dx) < Math.abs(dy) * SWIPE_RATIO) return;
+
+      swiped = true;
+      const anchor = addMonths(state.anchor, dx < 0 ? 1 : -1);
+      setState({ anchor, ...periodFollowing(anchor) });
+    },
+    { passive: true },
+  );
+
+  view.addEventListener("touchcancel", () => { tracking = false; }, { passive: true });
+
+  // A swipe that passed over an activity must not also open it. Capture phase,
+  // so this runs before the delegate that opens the detail panel.
+  view.addEventListener(
+    "click",
+    (event) => {
+      if (!swiped) return;
+      swiped = false;
+      event.stopPropagation();
+      event.preventDefault();
+    },
+    true,
+  );
 }
 
 /**
@@ -361,6 +446,20 @@ function applyData() {
     unitSelect.append(option);
   }
 
+  /* period options — one per year the cycle touches, plus the whole run */
+  const periodSelect = $("#period-select");
+  periodSelect.innerHTML = "";
+  for (const year of yearsCovered(data.range)) {
+    const option = document.createElement("option");
+    option.value = year;
+    option.textContent = year;
+    periodSelect.append(option);
+  }
+  const whole = document.createElement("option");
+  whole.value = ALL_YEARS;
+  whole.textContent = "Whole cycle";
+  periodSelect.append(whole);
+
   /* legend, which doubles as the stage filter */
   const legend = $("#legend");
   legend.innerHTML = "";
@@ -384,6 +483,43 @@ function applyData() {
     });
     legend.append(chip);
   }
+}
+
+/**
+ * When the month grid moves into a different year, follow it with the period
+ * control — unless the whole cycle is on show, which is not a year to leave.
+ */
+function periodFollowing(anchor) {
+  if (state.period === ALL_YEARS) return {};
+  const year = anchor.slice(0, 4);
+  if (year === state.period) return {};
+  return yearsCovered(data.range).includes(year) ? { period: year } : {};
+}
+
+/** The first month of `year` that actually holds an activity. */
+function firstMonthOf(year) {
+  const inYear = data.events
+    .filter((event) => event.end >= `${year}-01-01` && event.start <= `${year}-12-31`)
+    .map((event) => (event.start < `${year}-01-01` ? `${year}-01-01` : event.start))
+    .sort();
+  return startOfMonth(inYear[0] ?? `${year}-01-01`);
+}
+
+function setPeriod(period) {
+  const patch = { period };
+  if (state.view === "month") {
+    // Land the grid on a month that has something in it, rather than on a
+    // blank January.
+    patch.anchor =
+      period === ALL_YEARS
+        ? startOfMonth(
+            data.today >= data.range.start && data.today <= data.range.end
+              ? data.today
+              : data.range.start,
+          )
+        : firstMonthOf(period);
+  }
+  setState(patch);
 }
 
 function syncGeneratedAt() {
@@ -423,10 +559,12 @@ function syncControls() {
 
   $("#month-nav").hidden = state.view !== "month";
   $("#timeline-controls").hidden = state.view !== "timeline";
+  $("#period-select").value = state.period;
+  // In the month grid the select supplies the year, so the label names only
+  // the month; in the other views the select says it all.
+  $("#period-label").hidden = state.view !== "month";
   $("#period-label").textContent =
-    state.view === "month"
-      ? formatMonthYear(state.anchor)
-      : `${formatDay(data.range.start)} – ${formatDay(data.range.end)}`;
+    state.view === "month" ? MONTHS[Number(state.anchor.slice(5, 7)) - 1] : "";
 
   const filterCount =
     (state.query.trim() ? 1 : 0) + state.categories.size + state.units.size + state.lifecycles.size;
@@ -496,7 +634,13 @@ async function refreshData() {
     syncControls();
     render();
 
-    if (!changed) {
+    if (fresh.fromCache) {
+      toast(
+        "Showing the saved copy",
+        "The network could not be reached, so this is the schedule stored on this device.",
+        "error",
+      );
+    } else if (!changed) {
       toast("Already up to date", "The published schedule has not changed since it was last read.");
     } else {
       const delta = data.events.length - before;
@@ -515,6 +659,20 @@ async function refreshData() {
     button.disabled = false;
     button.classList.remove("is-busy");
   }
+}
+
+/**
+ * An export carries what is on screen, which the period selector narrows — so
+ * say how many activities went into the file rather than letting someone
+ * assume they exported the whole cycle.
+ */
+function announceExport(count, kind) {
+  const scope =
+    state.period === ALL_YEARS ? "the whole cycle" : `${state.period}`;
+  toast(
+    `${count} ${count === 1 ? "activity" : "activities"} exported`,
+    `The ${kind} holds what is currently in view (${scope}).`,
+  );
 }
 
 let toastTimer = null;
@@ -541,6 +699,7 @@ function toast(title, detail, tone = "info") {
 function visibleEvents() {
   return filterEvents(data.events, {
     query: state.query,
+    year: state.period,
     categories: state.categories,
     units: state.units,
     lifecycles: state.lifecycles,
@@ -589,10 +748,31 @@ function render() {
   }
 
   if (!events.length) {
+    const inOtherYears =
+      state.period === ALL_YEARS
+        ? 0
+        : filterEvents(data.events, {
+            query: state.query,
+            categories: state.categories,
+            units: state.units,
+            lifecycles: state.lifecycles,
+          }).length;
+
     container.innerHTML =
-      `<div class="notice"><h2>Nothing matches those filters</h2>` +
-      `<p>Try clearing the search box or re-enabling an SPMS stage in the legend above.</p>` +
-      `<button type="button" class="btn btn--primary" id="empty-reset">Clear all filters</button></div>`;
+      `<div class="notice"><h2>Nothing to show here</h2>` +
+      `<p>${
+        inOtherYears
+          ? `Nothing matches in ${escapeHtml(state.period)}, but ${inOtherYears} ` +
+            `${inOtherYears === 1 ? "activity matches" : "activities match"} elsewhere in the cycle.`
+          : "Try clearing the search box or re-enabling an SPMS stage in the legend below."
+      }</p>` +
+      `<div class="notice__actions">${
+        inOtherYears
+          ? `<button type="button" class="btn btn--primary" id="empty-widen">Show the whole cycle</button>`
+          : ""
+      }<button type="button" class="btn" id="empty-reset">Clear all filters</button></div></div>`;
+
+    $("#empty-widen")?.addEventListener("click", () => setPeriod(ALL_YEARS));
     $("#empty-reset").addEventListener("click", () =>
       setState({ query: "", categories: new Set(), units: new Set(), lifecycles: new Set() }),
     );

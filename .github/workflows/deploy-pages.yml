@@ -26,6 +26,9 @@ jobs:
       - name: Check the calendar data parses
         run: node -e "const d=require('./data/events.json'); if(!Array.isArray(d.events)||!d.events.length) throw new Error('events.json has no events'); console.log(d.events.length+' activities')"
 
+      - name: Check the web app manifest parses
+        run: node -e "const m=require('./manifest.webmanifest'); if(!m.icons?.length||!m.start_url) throw new Error('manifest is incomplete'); console.log(m.name+' — '+m.icons.length+' icons')"
+
       - uses: actions/configure-pages@v5
 
       # The site is plain HTML, CSS and ES modules — the repository root is the

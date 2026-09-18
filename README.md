@@ -20,6 +20,10 @@ table.
 
 Across all of them:
 
+- **Pick a year.** The cycle runs across two calendar years, so the toolbar
+  opens on the current one rather than dumping all 14 months at once. Choose the
+  other year, or *Whole cycle*, from the dropdown. In the month grid the same
+  dropdown jumps years, and it follows you as you page through the months.
 - **Search** activity names, responsible units, outputs and meeting notes.
 - **Filter** by SPMS stage (the legend doubles as the filter), by responsible
   unit, and by status (running / upcoming / completed).
@@ -31,11 +35,17 @@ Across all of them:
   [Refreshing the schedule](#refreshing-the-schedule) for what it can and
   cannot reach.
 - **Export** what is on screen as `.ics` or `.csv`, or print it (the print
-  stylesheet drops the chrome and keeps the schedule).
+  stylesheet drops the chrome and keeps the schedule). An export covers what the
+  period and filters currently show, and the confirmation says how many
+  activities went into the file.
 - **Share a link.** The view, month, zoom, grouping and every filter live in the
   URL hash, so `#view=timeline&zoom=weeks&cat=targets` is a bookmarkable link.
-- **Light and dark themes**, keyboard shortcuts, and a layout that works from
-  phone width upward.
+- **Install it** on a phone, tablet or desktop and use it offline — see
+  [Installing it](#installing-it).
+- **Light and dark themes** (light by default, switched with the slider in the
+  header), keyboard shortcuts, and a layout that works from phone width upward.
+- **On a phone**, swipe the month grid left or right to change month; the arrows
+  and the year dropdown sit at the top of the toolbar, within thumb reach.
 
 ### Keyboard
 
@@ -46,6 +56,30 @@ Across all of them:
 | <kbd>T</kbd> | Jump to today |
 | <kbd>/</kbd> | Focus the search box |
 | <kbd>Esc</kbd> | Close the activity panel |
+
+## Installing it
+
+The site is a progressive web app, so it installs from the browser on every
+platform without an app store:
+
+| Platform | How |
+| --- | --- |
+| **Android** (Chrome, Edge, Samsung Internet) | Tap **Install** in the header, or *⋮ → Install app* |
+| **iPhone / iPad** (Safari) | **Share → Add to Home Screen** — the **Install** button shows these steps |
+| **Windows / ChromeOS** (Chrome, Edge) | Click **Install** in the header, or the install icon in the address bar |
+| **macOS** (Chrome, Edge, Safari 17+) | Click **Install**, or Safari's *File → Add to Dock* |
+
+Installed, it opens in its own window with the district seal as its icon and
+without browser chrome, and it carries shortcuts straight to the timeline, the
+agenda and this month.
+
+`sw.js` caches the app and the schedule, so an installed copy opens and stays
+usable with no connection — showing the last schedule it managed to read. When
+the device is offline the **Refresh** button says so plainly rather than passing
+the saved copy off as current.
+
+A service worker needs HTTPS, which GitHub Pages provides. Over plain `http://`
+it is skipped, except on `localhost`, so local development behaves normally.
 
 ## Running it locally
 
@@ -94,7 +128,7 @@ There are two different refreshes, and it is worth keeping them apart:
 
 | | What it does | How to run it |
 | --- | --- | --- |
-| **Refresh** (in the page) | Re-reads `data/events.json` past any browser or CDN cache, re-renders the current view, and reports what changed. It does **not** talk to Google. | The **Refresh** button in the toolbar |
+| **Refresh** (in the page) | Re-reads `data/events.json` past any browser or CDN cache, re-renders the current view, and reports what changed — or, offline, that it served the saved copy. It does **not** talk to Google. | The **Refresh** button in the toolbar |
 | **Google → snapshot** | Re-reads the Google Calendar feed and commits a new `data/events.json`. | Automatic, twice a day; or **Actions → Refresh calendar data → Run workflow** to do it now |
 
 So: after editing the Google Calendar, run the workflow (or wait for the next
@@ -132,8 +166,11 @@ to configure; `.nojekyll` keeps Pages from reprocessing the files.
 
 ```
 index.html                     page shell and static chrome
+manifest.webmanifest           web app manifest — name, icons, shortcuts
+sw.js                          service worker: offline shell and schedule
 assets/css/styles.css          design tokens, components, print styles
 assets/js/main.js              state, URL-hash routing, filters, KPI strip
+assets/js/pwa.js               install prompt and service-worker lifecycle
 assets/js/store.js             data loading, filtering, lane packing, exports
 assets/js/dates.js             calendar-date arithmetic and formatting
 assets/js/detail.js            the activity panel (modal, focus trap)

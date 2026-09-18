@@ -28,6 +28,9 @@ export async function loadCalendar({ bust = false } = {}) {
     throw new Error(`Could not load calendar data (HTTP ${response.status})`);
   }
   const payload = await response.json();
+  // The service worker sets this when it served its offline copy rather than
+  // reaching the network.
+  const fromCache = response.headers.get("X-From-Cache") === "1";
   const today = todayISO(payload.calendar?.timeZone ?? "Asia/Manila");
 
   const categoryById = new Map(payload.categories.map((category) => [category.id, category]));
@@ -48,7 +51,7 @@ export async function loadCalendar({ bust = false } = {}) {
       .toLowerCase(),
   }));
 
-  return { ...payload, today, categoryById, events };
+  return { ...payload, today, fromCache, categoryById, events };
 }
 
 function lifecycleOf(event, today) {
@@ -70,7 +73,9 @@ function progressOf(event, today) {
 
 /**
  * @param {object[]} events
- * @param {{query?: string, categories?: Set<string>, units?: Set<string>, lifecycles?: Set<Lifecycle>}} filters
+ * @param {{query?: string, year?: string, categories?: Set<string>, units?: Set<string>, lifecycles?: Set<Lifecycle>}} filters
+ *   `year` is a four-digit string, or "all" for the whole cycle. An activity
+ *   that straddles New Year belongs to both years it touches.
  */
 export function filterEvents(events, filters = {}) {
   const query = (filters.query ?? "").trim().toLowerCase();
@@ -78,13 +83,27 @@ export function filterEvents(events, filters = {}) {
   const categories = filters.categories;
   const units = filters.units;
   const lifecycles = filters.lifecycles;
+  const year = filters.year && filters.year !== ALL_YEARS ? filters.year : null;
+  const yearStart = year ? `${year}-01-01` : null;
+  const yearEnd = year ? `${year}-12-31` : null;
 
   return events.filter((event) => {
+    if (year && !overlaps(event.start, event.end, yearStart, yearEnd)) return false;
     if (categories?.size && !categories.has(event.category)) return false;
     if (lifecycles?.size && !lifecycles.has(event.lifecycle)) return false;
     if (units?.size && !event.responsible.some((unit) => units.has(unit))) return false;
     return terms.every((term) => event.searchText.includes(term));
   });
+}
+
+/** The sentinel the period control uses for "do not filter by year". */
+export const ALL_YEARS = "all";
+
+/** Every calendar year the schedule touches, oldest first. */
+export function yearsCovered(range) {
+  const first = Number(range.start.slice(0, 4));
+  const last = Number(range.end.slice(0, 4));
+  return Array.from({ length: last - first + 1 }, (_, index) => String(first + index));
 }
 
 export function eventsInRange(events, startISO, endISO) {
