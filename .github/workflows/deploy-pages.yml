@@ -24,13 +24,41 @@ jobs:
       url: ${{ steps.deployment.outputs.page_url }}
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
 
-      - name: Check the calendar data parses
-        run: node -e "const d=require('./data/events.json'); if(!Array.isArray(d.events)||!d.events.length) throw new Error('events.json has no events'); console.log(d.events.length+' activities')"
+      # Read and parse rather than require(): Node's CommonJS loader only knows
+      # .js, .json and .node, so require() treats a .webmanifest as JavaScript
+      # and dies on the first key.
+      - name: Check the published files parse
+        run: |
+          node -e "
+            const { readFileSync } = require('node:fs');
+            const read = (path) => JSON.parse(readFileSync(path, 'utf8'));
 
-      - name: Check the web app manifest parses
-        run: node -e "const m=require('./manifest.webmanifest'); if(!m.icons?.length||!m.start_url) throw new Error('manifest is incomplete'); console.log(m.name+' — '+m.icons.length+' icons')"
+            const data = read('./data/events.json');
+            if (!Array.isArray(data.events) || !data.events.length) {
+              throw new Error('data/events.json has no events');
+            }
+            console.log(data.events.length + ' activities');
+
+            const manifest = read('./manifest.webmanifest');
+            if (!manifest.icons?.length || !manifest.start_url) {
+              throw new Error('manifest.webmanifest is incomplete');
+            }
+            console.log(manifest.name + ' - ' + manifest.icons.length + ' icons');
+          "
+
+      # Every icon the manifest names must actually be in the artifact, or the
+      # install prompt silently declines to appear.
+      - name: Check the manifest's icons exist
+        run: |
+          node -e "
+            const { readFileSync, existsSync } = require('node:fs');
+            const manifest = JSON.parse(readFileSync('./manifest.webmanifest', 'utf8'));
+            const missing = manifest.icons.map((i) => i.src).filter((src) => !existsSync(src));
+            if (missing.length) throw new Error('missing icons: ' + missing.join(', '));
+            console.log(manifest.icons.length + ' icons present');
+          "
 
       # Stamp the service worker with this commit, so a deploy always lands in a
       # fresh cache and installed copies pick it up instead of serving the old
