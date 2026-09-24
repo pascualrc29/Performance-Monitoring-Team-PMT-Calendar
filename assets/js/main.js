@@ -6,7 +6,8 @@
  */
 
 import {
-  addMonths, formatDay, MONTHS, relativeLabel, spanDays, startOfMonth,
+  addMonths, formatDay, formatDuration, formatTime, MONTHS, relativeLabel,
+  spanDays, startOfMonth,
 } from "./dates.js";
 import {
   ALL_YEARS, filterEvents, LIFECYCLE_LABEL, loadCalendar, paintStage, stageStyle,
@@ -763,7 +764,17 @@ function renderStats(events) {
         kind: "now",
         eyebrow: running.length > 1 ? `Running today · ${running.length} activities` : "Running today",
         event: running[0],
-        meta: `Day ${Math.max(1, spanDays(running[0].start, today))} of ${running[0].durationDays} · ends ${formatDay(running[0].end)}`,
+        meta:
+          running[0].durationDays > 1
+            ? `Day ${Math.max(1, spanDays(running[0].start, today))} of ${running[0].durationDays} · ends ${formatDay(running[0].end)}`
+            : [
+                running[0].startTime
+                  ? `${formatTime(running[0].startTime)}–${formatTime(running[0].endTime)}`
+                  : null,
+                formatDuration(running[0]),
+              ]
+                .filter(Boolean)
+                .join(" · "),
         progress: Math.round(running[0].progress * 100),
       })
     : heroEmpty("Running today", "Nothing scheduled for today", formatDay(today));
@@ -773,9 +784,16 @@ function renderStats(events) {
         kind: "next",
         eyebrow: "Next up",
         event: next,
-        meta: `${formatDay(next.start)} · ${relativeLabel(next.start, today)} · ${
-          next.durationDays === 1 ? "1 day" : `${next.durationDays} days`
-        }`,
+        // Through formatDuration, so a timed half-day session reports its real
+        // length here too rather than the "1 day" a date-span count would give.
+        meta: [
+          formatDay(next.start),
+          next.startTime ? `${formatTime(next.startTime)}–${formatTime(next.endTime)}` : null,
+          relativeLabel(next.start, today),
+          formatDuration(next),
+        ]
+          .filter(Boolean)
+          .join(" · "),
       })
     : heroEmpty(
         "Next up",
