@@ -6,8 +6,8 @@
     "icsUrl": "https://calendar.google.com/calendar/ical/1f439e7aa260c469cb2105d6e8bd9ccd4aa38bf389a48bd06a917bd947a8a43a%40group.calendar.google.com/public/basic.ics",
     "googleUrl": "https://calendar.google.com/calendar/embed?src=1f439e7aa260c469cb2105d6e8bd9ccd4aa38bf389a48bd06a917bd947a8a43a%40group.calendar.google.com&ctz=Asia%2FManila"
   },
-  "generatedAt": "2026-09-24T04:03:57.185Z",
-  "contentHash": "d04f9db2e12169ee",
+  "generatedAt": "2026-09-24T05:13:49.107Z",
+  "contentHash": "011e8f4e097d1d9b",
   "range": {
     "start": "2026-09-16",
     "end": "2026-12-18"
@@ -95,6 +95,8 @@
       "startTime": null,
       "endTime": null,
       "durationDays": 15,
+      "durationMinutes": null,
+      "session": null,
       "responsible": [
         "Division Managers",
         "AGMs (Assistant General Managers)",
@@ -115,6 +117,8 @@
       "startTime": null,
       "endTime": null,
       "durationDays": 1,
+      "durationMinutes": null,
+      "session": null,
       "responsible": [],
       "output": null,
       "notes": [
@@ -135,15 +139,16 @@
       "startTime": "08:00",
       "endTime": "12:00",
       "durationDays": 1,
+      "durationMinutes": 240,
+      "session": "AM",
       "responsible": [],
       "output": null,
       "notes": [
-        "September 28, 2026 (AM)",
         "Treasury Division - Relivie T. Marcelo",
         "General Accounting and Budget Division - Analiza V. Bulaon"
       ],
       "status": "CONFIRMED",
-      "updated": "2026-09-24T03:43:05.000Z"
+      "updated": "2026-09-24T05:08:21.000Z"
     },
     {
       "id": "59bhkiu34tf0i1423rc4np9vrk@google.com",
@@ -155,14 +160,15 @@
       "startTime": "13:00",
       "endTime": "17:00",
       "durationDays": 1,
+      "durationMinutes": 240,
+      "session": "PM",
       "responsible": [],
       "output": null,
       "notes": [
-        "September 28, 2026 (PM)",
         "Sanitation Division & Planning and Design Division - Engr. Norman Oliver P. Ragil"
       ],
       "status": "CONFIRMED",
-      "updated": "2026-09-24T03:42:27.000Z"
+      "updated": "2026-09-24T05:08:32.000Z"
     },
     {
       "id": "624vakalhpi4gvdepv860mjtve@google.com",
@@ -174,15 +180,16 @@
       "startTime": "08:00",
       "endTime": "12:00",
       "durationDays": 1,
+      "durationMinutes": 240,
+      "session": "AM",
       "responsible": [],
       "output": null,
       "notes": [
-        "September 29, 2026 (AM)",
         "General Services Division - Jose Rainier Manuel R. Evangelista",
         "Property and Warehousing and Materials and Equipment Quality Control Division - Glenda S. Nolasco"
       ],
       "status": "CONFIRMED",
-      "updated": "2026-09-24T03:44:57.000Z"
+      "updated": "2026-09-24T05:08:38.000Z"
     },
     {
       "id": "5ahi6sh1nkg5fsnpnauev6ugd0@google.com",
@@ -194,15 +201,16 @@
       "startTime": "13:00",
       "endTime": "17:00",
       "durationDays": 1,
+      "durationMinutes": 240,
+      "session": "PM",
       "responsible": [],
       "output": null,
       "notes": [
-        "September 29, 2026 (PM)",
         "Water Distribution and Non-Revenue Water Management Division - Engr. Joel G. Mestidio",
         "Pipelines and Leakage Control Division - Engr. Danilo F. Torres"
       ],
       "status": "CONFIRMED",
-      "updated": "2026-09-24T03:46:43.000Z"
+      "updated": "2026-09-24T05:08:47.000Z"
     },
     {
       "id": "5j7vo66ebg3av5buucpomnvrvv@google.com",
@@ -214,14 +222,15 @@
       "startTime": "08:00",
       "endTime": "12:00",
       "durationDays": 1,
+      "durationMinutes": 240,
+      "session": "AM",
       "responsible": [],
       "output": null,
       "notes": [
-        "September 30, 2026 (AM)",
         "Water Production and Electro-Mechanical Division - Rodolfo S. Cruz, Jr."
       ],
       "status": "CONFIRMED",
-      "updated": "2026-09-24T03:47:50.000Z"
+      "updated": "2026-09-24T05:08:54.000Z"
     },
     {
       "id": "4o1dlahuivf98sta3pu8ci8m53@google.com",
@@ -233,14 +242,15 @@
       "startTime": "13:00",
       "endTime": "17:00",
       "durationDays": 1,
+      "durationMinutes": 240,
+      "session": "PM",
       "responsible": [],
       "output": null,
       "notes": [
-        "September 30, 2026 (PM)",
         "Water Quality Division - Jennielyn P. Santiago"
       ],
       "status": "CONFIRMED",
-      "updated": "2026-09-24T03:49:11.000Z"
+      "updated": "2026-09-24T05:09:01.000Z"
     },
     {
       "id": "5d159d5ss4f8geakqbcitu1csi@google.com",
@@ -252,6 +262,8 @@
       "startTime": null,
       "endTime": null,
       "durationDays": 5,
+      "durationMinutes": null,
+      "session": null,
       "responsible": [],
       "output": null,
       "notes": [],
@@ -268,15 +280,16 @@
       "startTime": "08:00",
       "endTime": "12:00",
       "durationDays": 1,
+      "durationMinutes": 240,
+      "session": "AM",
       "responsible": [],
       "output": null,
       "notes": [
-        "October 1, 2026 (AM)",
         "Manpower Planning & Recruitment Division - May Anne R. Cruz",
         "Training and Development Division - Rodolfo T. de Leon"
       ],
       "status": "CONFIRMED",
-      "updated": "2026-09-24T03:50:48.000Z"
+      "updated": "2026-09-24T05:09:09.000Z"
     },
     {
       "id": "5e1ljotjs7g27ujop91to6d6cf@google.com",
@@ -288,14 +301,15 @@
       "startTime": "13:00",
       "endTime": "17:00",
       "durationDays": 1,
+      "durationMinutes": 240,
+      "session": "PM",
       "responsible": [],
       "output": null,
       "notes": [
-        "October 1, 2026 (PM)",
         "New Service Connection and Customer Care Division & Accounts and Billing Division - Cecilia G. Fabian"
       ],
       "status": "CONFIRMED",
-      "updated": "2026-09-24T03:52:08.000Z"
+      "updated": "2026-09-24T05:09:15.000Z"
     },
     {
       "id": "5fuc0cc70vmgto3aorsroms8as@google.com",
@@ -307,16 +321,17 @@
       "startTime": null,
       "endTime": null,
       "durationDays": 1,
+      "durationMinutes": null,
+      "session": null,
       "responsible": [],
       "output": null,
       "notes": [
-        "October 2, 2026 (AM)",
         "Corporate Planning Department - Eloisa E. Ramos",
         "Management Information Services Division - Cristom E. Lumaban",
         "Legal Services and Public Information Division - Atty. Jose Angelo P. Pagkanlungan"
       ],
       "status": "CONFIRMED",
-      "updated": "2026-09-24T03:54:46.000Z"
+      "updated": "2026-09-24T05:09:25.000Z"
     },
     {
       "id": "5botuoopo4m6b109clk3125r5v@google.com",
@@ -328,6 +343,8 @@
       "startTime": null,
       "endTime": null,
       "durationDays": 11,
+      "durationMinutes": null,
+      "session": null,
       "responsible": [
         "Division Managers",
         "AGMs (Assistant General Managers)",
@@ -349,6 +366,8 @@
       "startTime": "08:30",
       "endTime": "11:30",
       "durationDays": 1,
+      "durationMinutes": 180,
+      "session": "AM",
       "responsible": [],
       "output": null,
       "notes": [],
@@ -365,6 +384,8 @@
       "startTime": null,
       "endTime": null,
       "durationDays": 9,
+      "durationMinutes": null,
+      "session": null,
       "responsible": [
         "Division Managers",
         "AGMs (Assistant General Managers)",
@@ -386,6 +407,8 @@
       "startTime": "08:30",
       "endTime": "15:30",
       "durationDays": 1,
+      "durationMinutes": 420,
+      "session": null,
       "responsible": [],
       "output": null,
       "notes": [],
@@ -402,6 +425,8 @@
       "startTime": null,
       "endTime": null,
       "durationDays": 3,
+      "durationMinutes": null,
+      "session": null,
       "responsible": [
         "GM (General Manager)",
         "AGMs (Assistant General Managers)",
@@ -424,6 +449,8 @@
       "startTime": null,
       "endTime": null,
       "durationDays": 1,
+      "durationMinutes": null,
+      "session": null,
       "responsible": [
         "Board of Directors"
       ],
@@ -442,6 +469,8 @@
       "startTime": null,
       "endTime": null,
       "durationDays": 12,
+      "durationMinutes": null,
+      "session": null,
       "responsible": [
         "Division Managers",
         "AGMs (Assistant General Managers)",
@@ -463,6 +492,8 @@
       "startTime": null,
       "endTime": null,
       "durationDays": 5,
+      "durationMinutes": null,
+      "session": null,
       "responsible": [
         "Department / Division Managers"
       ],
@@ -481,6 +512,8 @@
       "startTime": null,
       "endTime": null,
       "durationDays": 2,
+      "durationMinutes": null,
+      "session": null,
       "responsible": [
         "PMT (Performance Monitoring Team)",
         "Division Managers"
@@ -500,6 +533,8 @@
       "startTime": null,
       "endTime": null,
       "durationDays": 2,
+      "durationMinutes": null,
+      "session": null,
       "responsible": [
         "GM (General Manager)",
         "PMT (Performance Monitoring Team)"
@@ -519,6 +554,8 @@
       "startTime": null,
       "endTime": null,
       "durationDays": 1,
+      "durationMinutes": null,
+      "session": null,
       "responsible": [
         "AGMs (Assistant General Managers)",
         "Department / Division Managers"
@@ -538,6 +575,8 @@
       "startTime": null,
       "endTime": null,
       "durationDays": 1,
+      "durationMinutes": null,
+      "session": null,
       "responsible": [
         "CPD Head",
         "GM (General Manager)"
@@ -557,6 +596,8 @@
       "startTime": null,
       "endTime": null,
       "durationDays": 5,
+      "durationMinutes": null,
+      "session": null,
       "responsible": [
         "Immediate Heads"
       ],
@@ -575,6 +616,8 @@
       "startTime": null,
       "endTime": null,
       "durationDays": 5,
+      "durationMinutes": null,
+      "session": null,
       "responsible": [
         "Immediate Supervisors",
         "Individual employees"
@@ -594,6 +637,8 @@
       "startTime": null,
       "endTime": null,
       "durationDays": 1,
+      "durationMinutes": null,
+      "session": null,
       "responsible": [
         "Department / Division Managers"
       ],
@@ -612,6 +657,8 @@
       "startTime": null,
       "endTime": null,
       "durationDays": 2,
+      "durationMinutes": null,
+      "session": null,
       "responsible": [
         "PMT (Performance Monitoring Team)"
       ],
@@ -630,6 +677,8 @@
       "startTime": null,
       "endTime": null,
       "durationDays": 1,
+      "durationMinutes": null,
+      "session": null,
       "responsible": [
         "Department / Division Managers"
       ],

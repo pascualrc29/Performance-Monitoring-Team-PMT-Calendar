@@ -145,7 +145,21 @@ export function formatTime(hhmm) {
   return `${hour}:${String(m).padStart(2, "0")} ${suffix}`;
 }
 
-export function formatDuration(days) {
+/**
+ * How long an activity runs. A timed session inside a single day is reported on
+ * the clock — an 08:00-12:00 meeting is four hours, not the "1 day" a date-span
+ * count would claim.
+ */
+export function formatDuration(event) {
+  const minutes = typeof event === "object" ? event.durationMinutes : null;
+  if (minutes && minutes > 0) {
+    const hours = minutes / 60;
+    if (minutes < 60) return `${minutes} minutes`;
+    const rounded = Number.isInteger(hours) ? String(hours) : hours.toFixed(1);
+    return `${rounded} ${hours === 1 ? "hour" : "hours"}`;
+  }
+
+  const days = typeof event === "object" ? event.durationDays : event;
   if (days <= 1) return "1 day";
   if (days === 7) return "1 week";
   if (days % 7 === 0) return `${days / 7} weeks`;

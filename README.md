@@ -168,7 +168,16 @@ Unit/Person Responsible: Division Managers, AGMs, CPD
 Output: PAPs/PMMP/Workforce Plan/L&D Plan
 ```
 
-Anything else in the description shows up as agenda notes on the activity panel.
+Anything else in the description becomes the activity's **agenda notes**, and
+those are shown in the agenda list, the table and the month-grid tooltip — not
+just in the detail panel. That matters when several activities share a title and
+differ only in who attends, as the CY 2027 planning meetings do.
+
+**Half-day sessions.** Give the event a real start and end time in Google
+Calendar and the site reports the true length — an 08:00–12:00 entry reads as
+"4 hours", not "1 day" — and tags it `AM` or `PM`. An activity that spans both
+halves gets no tag. An all-day event has no clock to read, so it stays "1 day"
+however the description describes it.
 
 ## Deployment
 

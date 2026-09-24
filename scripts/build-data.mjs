@@ -351,6 +351,7 @@ function normalise(raw) {
   const lines = descriptionToLines(unescapeText(raw.DESCRIPTION?.value ?? ""));
   const responsible = [];
   let output = null;
+  let session = null;
   const notes = [];
 
   for (const line of lines) {
@@ -364,10 +365,38 @@ function normalise(raw) {
       output = outputMatch[1].trim();
       continue;
     }
+    // "September 28, 2026 (AM)" restates the date we already have. Only some
+    // entries carry it, so it is a fallback for the all-day ones; a timed
+    // activity gets its half of the day from the clock instead.
+    const sessionMatch = /^[A-Za-z]+\s+\d{1,2},?\s+\d{4}\s*\((AM|PM)\)$/i.exec(line);
+    if (sessionMatch) {
+      session = sessionMatch[1].toUpperCase();
+      continue;
+    }
     notes.push(line);
   }
 
   const durationDays = daysBetween(startDate, endDate) + 1;
+
+  // Minutes on the clock, for a timed activity that sits inside one day. A
+  // 08:00-12:00 session is half a working day, not the "1 day" a date-span
+  // count would report.
+  const toMinutes = (hhmm) => {
+    const [h, m] = hhmm.split(":").map(Number);
+    return h * 60 + m;
+  };
+  /** "AM" or "PM" only when the whole activity falls in that half of the day. */
+  const sessionFor = (from, to) => {
+    if (!from || !to) return null;
+    if (toMinutes(to) <= 12 * 60) return "AM";
+    if (toMinutes(from) >= 12 * 60) return "PM";
+    return null;
+  };
+
+  const durationMinutes =
+    !allDay && startTime && endTime && startDate === endDate
+      ? toMinutes(endTime) - toMinutes(startTime)
+      : null;
 
   return {
     id: raw.UID?.value ?? `${startDate}-${title}`,
@@ -379,6 +408,12 @@ function normalise(raw) {
     startTime,
     endTime,
     durationDays,
+    durationMinutes,
+    // Only label the half of the day when the activity actually sits inside
+    // one: an 08:30-15:30 meeting spans both, and calling it "AM" would lie.
+    // The clock is authoritative where there is one; the description marker
+    // only covers the all-day entries.
+    session: sessionFor(startTime, endTime) ?? session,
     responsible: [...new Set(responsible)],
     output,
     notes,

@@ -192,9 +192,17 @@ function renderBar({ segment, lane, weekStart, weekEnd, today, category, hidden 
   label.textContent = `${continuesLeft ? "◂ " : ""}${time}${event.title}`;
   bar.append(label);
 
-  bar.title = `${event.title}\n${formatRange(event.start, event.end)}${
-    time ? `\n${formatTime(event.startTime)}–${formatTime(event.endTime)}` : ""
-  }\n${category?.label ?? ""}`;
+  // Several activities share a title and differ only in their notes, so the
+  // hover text has to carry them.
+  bar.title = [
+    event.title,
+    formatRange(event.start, event.end) +
+      (time ? ` · ${formatTime(event.startTime)}–${formatTime(event.endTime)}` : ""),
+    category?.label ?? "",
+    ...event.notes,
+  ]
+    .filter(Boolean)
+    .join("\n");
   bar.setAttribute(
     "aria-label",
     `${event.title}. ${category?.label ?? ""}. ${formatRange(event.start, event.end)}.`,

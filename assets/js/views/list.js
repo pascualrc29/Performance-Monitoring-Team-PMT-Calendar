@@ -97,13 +97,15 @@ function agendaCard(event, today, categoryById) {
   if (!event.allDay && event.startTime) {
     bits.push(`${formatTime(event.startTime)}–${formatTime(event.endTime)}`);
   }
-  bits.push(formatDuration(event.durationDays));
+  bits.push(formatDuration(event));
   meta.textContent = bits.join(" · ");
   body.append(meta);
 
   const tags = document.createElement("span");
   tags.className = "acard__tags";
-  tags.innerHTML = `<span class="tag tag--series">${escapeHtml(category?.short ?? "Other")}</span>`;
+  tags.innerHTML =
+    `<span class="tag tag--series">${escapeHtml(category?.short ?? "Other")}</span>` +
+    (event.session ? `<span class="tag tag--session">${event.session}</span>` : "");
   for (const unit of event.responsible.slice(0, 3)) {
     tags.innerHTML += `<span class="tag">${escapeHtml(unit)}</span>`;
   }
@@ -117,6 +119,19 @@ function agendaCard(event, today, categoryById) {
     output.className = "acard__output";
     output.innerHTML = `<span class="acard__output-label">Output</span> ${escapeHtml(event.output)}`;
     body.append(output);
+  }
+
+  // Several activities share a title and differ only in which offices attend,
+  // so the agenda has to show the notes, not hide them behind a click.
+  if (event.notes.length) {
+    const notes = document.createElement("span");
+    notes.className = "acard__notes";
+    notes.innerHTML =
+      `<span class="acard__output-label">Agenda</span>` +
+      `<span class="acard__notes-list">${event.notes
+        .map((note) => `<span class="acard__note">${escapeHtml(note)}</span>`)
+        .join("")}</span>`;
+    body.append(notes);
   }
 
   card.append(body);
@@ -148,6 +163,7 @@ const COLUMNS = [
   { id: "duration", label: "Duration", sort: (e) => e.durationDays, numeric: true },
   { id: "responsible", label: "Responsible unit(s)", sort: (e) => e.responsible.join(", ").toLowerCase() },
   { id: "output", label: "Expected output", sort: (e) => (e.output ?? "").toLowerCase() },
+  { id: "notes", label: "Agenda / notes", sort: (e) => e.notes.join(" ").toLowerCase() },
   { id: "status", label: "Status", sort: (e) => ["active", "upcoming", "done"].indexOf(e.lifecycle), numeric: true },
 ];
 
@@ -209,16 +225,22 @@ export function renderTable(container, { events, categoryById, sort, onSort }) {
 
     const timeNote =
       !event.allDay && event.startTime
-        ? `<br><span class="dtable__sub">${formatTime(event.startTime)}–${formatTime(event.endTime)}</span>`
+        ? `<br><span class="dtable__sub">${formatTime(event.startTime)}–${formatTime(event.endTime)}` +
+          `${event.session ? ` (${event.session})` : ""}</span>`
         : "";
 
     tr.innerHTML =
       `<th scope="row"><span class="dtable__dot" style="${stageStyle(event.category)}"></span>${escapeHtml(event.title)}</th>` +
       `<td>${escapeHtml(categoryById.get(event.category)?.label ?? "Other")}</td>` +
       `<td>${escapeHtml(formatRange(event.start, event.end))}${timeNote}</td>` +
-      `<td class="u-num">${escapeHtml(formatDuration(event.durationDays))}</td>` +
+      `<td class="u-num">${escapeHtml(formatDuration(event))}</td>` +
       `<td>${event.responsible.length ? escapeHtml(event.responsible.join(", ")) : '<span class="dtable__sub">Not recorded</span>'}</td>` +
       `<td>${event.output ? escapeHtml(event.output) : '<span class="dtable__sub">—</span>'}</td>` +
+      `<td>${
+        event.notes.length
+          ? `<ul class="dtable__notes">${event.notes.map((n) => `<li>${escapeHtml(n)}</li>`).join("")}</ul>`
+          : '<span class="dtable__sub">—</span>'
+      }</td>` +
       `<td><span class="pill pill--${event.lifecycle}">${LIFECYCLE_LABEL[event.lifecycle]}</span></td>`;
     tbody.append(tr);
   }

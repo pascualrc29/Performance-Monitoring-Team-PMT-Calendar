@@ -119,7 +119,7 @@ function template(event, { calendar, categoryById, today }) {
     !event.allDay && event.startTime
       ? ["Time", `${formatTime(event.startTime)} – ${formatTime(event.endTime)} (${calendar.timeZone.split("/")[1]})`]
       : null,
-    ["Duration", escapeHtml(formatDuration(event.durationDays))],
+    ["Duration", escapeHtml(formatDuration(event)) + (event.session ? ` (${event.session} session)` : "")],
     ["SPMS stage", escapeHtml(category?.label ?? "Other")],
     event.output ? ["Expected output", escapeHtml(event.output)] : null,
   ].filter(Boolean);
