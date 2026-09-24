@@ -11,6 +11,7 @@
  * runtime dependency on Google (the ICS endpoint sends no CORS headers).
  */
 
+import { createHash } from "node:crypto";
 import { readFile, writeFile } from "node:fs/promises";
 import { dirname, resolve } from "node:path";
 import { fileURLToPath } from "node:url";
@@ -392,9 +393,10 @@ function normalise(raw) {
  * Main
  * ------------------------------------------------------------------ */
 
+const CACHE_PATH = resolve(ROOT, "data/pmt-calendar.ics");
+
 async function loadIcs({ offline }) {
-  const cachePath = resolve(ROOT, "data/pmt-calendar.ics");
-  if (offline) return readFile(cachePath, "utf8");
+  if (offline) return readFile(CACHE_PATH, "utf8");
 
   const response = await fetch(ICS_URL, {
     headers: { "user-agent": "bwd-pmt-calendar/1.0 (+static site build)" },
@@ -406,7 +408,6 @@ async function loadIcs({ offline }) {
   if (!text.includes("BEGIN:VCALENDAR")) {
     throw new Error("Calendar feed did not return an iCalendar document");
   }
-  await writeFile(cachePath, text, "utf8");
   return text;
 }
 
@@ -418,7 +419,20 @@ const events = raw
   .map(normalise)
   .filter(Boolean)
   .filter((event) => event.status !== "CANCELLED")
-  .sort((a, b) => a.start.localeCompare(b.start) || a.title.localeCompare(b.title));
+  // Google does not return the feed in a stable order, and two activities can
+  // share a start date and a title, so the id breaks the last tie. Without it
+  // consecutive builds emit different files for an identical calendar.
+  // Within a day an all-day activity leads, then timed ones in clock order.
+  // Google does not return the feed in a stable order and two activities can
+  // share a date, a time and a title, so the id breaks the last tie — without
+  // it consecutive builds emit different files for an identical calendar.
+  .sort(
+    (a, b) =>
+      a.start.localeCompare(b.start) ||
+      (a.startTime ?? "").localeCompare(b.startTime ?? "") ||
+      a.title.localeCompare(b.title) ||
+      a.id.localeCompare(b.id),
+  );
 
 const usedCategories = new Set(events.map((event) => event.category));
 const categories = [...CATEGORIES, FALLBACK_CATEGORY]
@@ -435,6 +449,17 @@ const units = [...new Set(events.flatMap((event) => event.responsible))].sort((a
   a.localeCompare(b),
 );
 
+/**
+ * Fingerprint of the schedule itself, ignoring when it was read. The workflow
+ * commits only when this changes, so an unchanged calendar does not produce a
+ * commit — and a deploy — every hour, for ever.
+ */
+function contentHashOf(parts) {
+  return createHash("sha256").update(JSON.stringify(parts)).digest("hex").slice(0, 16);
+}
+
+const contentHash = contentHashOf({ categories, units, events });
+
 const payload = {
   calendar: {
     name: calendarName,
@@ -444,6 +469,7 @@ const payload = {
     googleUrl: HTML_URL,
   },
   generatedAt: new Date().toISOString(),
+  contentHash,
   range: {
     start: events.at(0)?.start ?? null,
     end: events.reduce((latest, event) => (event.end > latest ? event.end : latest), events.at(0)?.end ?? ""),
@@ -453,10 +479,24 @@ const payload = {
   events,
 };
 
-await writeFile(resolve(ROOT, "data/events.json"), `${JSON.stringify(payload, null, 2)}\n`, "utf8");
+// Nothing changed but the clock? Leave both files exactly as they are, so
+// `git diff --quiet` tells the truth and an unchanged calendar produces no
+// commit — and no deploy — every hour for ever.
+const eventsPath = resolve(ROOT, "data/events.json");
+const existing = await readFile(eventsPath, "utf8")
+  .then(JSON.parse)
+  .catch(() => null);
+const unchanged = existing?.contentHash === contentHash;
+
+if (!unchanged) {
+  await writeFile(eventsPath, `${JSON.stringify(payload, null, 2)}\n`, "utf8");
+  if (!offline) await writeFile(CACHE_PATH, ics, "utf8");
+}
 
 console.log(
-  `Wrote data/events.json — ${events.length} activities, ${categories.length} categories, ` +
+  unchanged
+    ? `No change — data/events.json left as it was (${contentHash})`
+    : `Wrote data/events.json — ${events.length} activities, ${categories.length} categories, ` +
     `${units.length} responsible units, ${payload.range.start} → ${payload.range.end}`,
 );
 for (const category of categories) {

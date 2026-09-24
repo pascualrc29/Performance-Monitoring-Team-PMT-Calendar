@@ -125,13 +125,32 @@ There are two different refreshes, and it is worth keeping them apart:
 | | What it does | How to run it |
 | --- | --- | --- |
 | **Refresh** (in the page) | Re-reads `data/events.json` past any browser or CDN cache, re-renders the current view, and reports what changed — or, offline, that it served the saved copy. It does **not** talk to Google. | The **Refresh** button in the toolbar |
-| **Google → snapshot** | Re-reads the Google Calendar feed and commits a new `data/events.json`. | Automatic, twice a day; or **Actions → Refresh calendar data → Run workflow** to do it now |
+| **Google → snapshot** | Re-reads the Google Calendar feed, commits a new `data/events.json` **and publishes it**. | Automatic, hourly; or **Actions → Refresh calendar data → Run workflow** to do it now |
 
-So: after editing the Google Calendar, run the workflow (or wait for the next
-scheduled run), then hit **Refresh** in the page to pick it up. Hitting Refresh
-on its own tells you the snapshot has not moved, which is the honest answer —
-the browser cannot read the Google feed directly, because that endpoint sends no
-CORS headers.
+So: after editing the Google Calendar, wait for the next hourly run (or run the
+workflow yourself), then hit **Refresh** in the page to pick it up without
+reloading. Hitting Refresh on its own tells you the published snapshot has not
+moved, which is the honest answer — the browser cannot read the Google feed
+directly, because that endpoint sends no CORS headers.
+
+**Why the refresh workflow publishes the site itself.** GitHub will not start a
+workflow from a push made with the default `GITHUB_TOKEN`:
+
+> When you use the repository's `GITHUB_TOKEN` to perform tasks, events
+> triggered by the `GITHUB_TOKEN` will not create a new workflow run.
+
+So `refresh-calendar.yml` committing a snapshot never triggered
+`deploy-pages.yml`, and for six days every refresh landed in the repository
+without reaching the live site. The refresh workflow now has its own `publish`
+job that deploys the commit it just made. The two deploy paths are deliberately
+kept in step rather than shared: a reusable workflow would check out the
+caller's SHA, which predates the refresh commit.
+
+**The build is idempotent.** Google returns the feed in an unstable order, and
+two activities can share a date, a time and a title, so events are sorted with
+the id as a final tiebreaker and the payload carries a `contentHash`. An
+unchanged calendar rewrites nothing, which is what stops an hourly job
+committing — and deploying — for ever.
 
 The in-page refresh keeps your current view, month, zoom and search, and drops
 only a stage or unit filter whose value no longer exists in the new data, so a

@@ -2,13 +2,20 @@ name: Refresh calendar data
 
 # The site ships a snapshot of the PMT Google Calendar because Google's
 # iCalendar endpoint sends no CORS headers, so the browser cannot read it
-# directly. This job re-reads the feed and commits the snapshot when it changes.
+# directly. This job re-reads the feed, commits the snapshot when the schedule
+# actually changed, and publishes it.
+#
+# It publishes in a second job rather than leaving that to deploy-pages.yml,
+# because GitHub does not start a workflow from a push made with the default
+# GITHUB_TOKEN:
+#   "When you use the repository's GITHUB_TOKEN to perform tasks, events
+#    triggered by the GITHUB_TOKEN will not create a new workflow run."
+# Without this, every refresh landed in the repository and none of them ever
+# reached the live site.
 
 on:
   schedule:
-    # 06:00 and 18:00 Philippine time (UTC+8).
-    - cron: "0 22 * * *"
-    - cron: "0 10 * * *"
+    - cron: "0 * * * *"
   workflow_dispatch:
 
 permissions:
@@ -21,6 +28,9 @@ concurrency:
 jobs:
   refresh:
     runs-on: ubuntu-latest
+    outputs:
+      changed: ${{ steps.commit.outputs.changed }}
+      sha: ${{ steps.commit.outputs.sha }}
     steps:
       - uses: actions/checkout@v5
 
@@ -31,10 +41,12 @@ jobs:
       - name: Read the calendar feed
         run: node scripts/build-data.mjs
 
-      - name: Commit the snapshot if it changed
+      - name: Commit the snapshot if the schedule changed
+        id: commit
         run: |
           if git diff --quiet -- data/; then
             echo "Calendar unchanged; nothing to commit."
+            echo "changed=false" >> "$GITHUB_OUTPUT"
             exit 0
           fi
           git config user.name "github-actions[bot]"
@@ -42,3 +54,51 @@ jobs:
           git add data/
           git commit -m "chore(data): refresh PMT calendar snapshot"
           git push
+          echo "changed=true" >> "$GITHUB_OUTPUT"
+          echo "sha=$(git rev-parse HEAD)" >> "$GITHUB_OUTPUT"
+
+  # Publishes the commit the refresh just made. Mirrors deploy-pages.yml; the
+  # two are kept in step deliberately rather than shared, because a reusable
+  # workflow would check out the caller's SHA, which predates that commit.
+  publish:
+    needs: refresh
+    if: needs.refresh.outputs.changed == 'true'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      pages: write
+      id-token: write
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          ref: ${{ needs.refresh.outputs.sha }}
+
+      - name: Check the published files parse
+        run: |
+          node -e "
+            const { readFileSync } = require('node:fs');
+            const data = JSON.parse(readFileSync('./data/events.json', 'utf8'));
+            if (!Array.isArray(data.events) || !data.events.length) {
+              throw new Error('data/events.json has no events');
+            }
+            console.log(data.events.length + ' activities');
+          "
+
+      - name: Version the service worker
+        env:
+          SHA: ${{ needs.refresh.outputs.sha }}
+        run: |
+          sed -i "s/__BUILD__/${SHA:0:12}/" sw.js
+          grep -n 'const VERSION' sw.js
+
+      - uses: actions/configure-pages@v5
+
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: .
+
+      - id: deployment
+        uses: actions/deploy-pages@v4

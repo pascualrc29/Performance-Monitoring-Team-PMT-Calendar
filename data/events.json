@@ -6,7 +6,8 @@
     "icsUrl": "https://calendar.google.com/calendar/ical/1f439e7aa260c469cb2105d6e8bd9ccd4aa38bf389a48bd06a917bd947a8a43a%40group.calendar.google.com/public/basic.ics",
     "googleUrl": "https://calendar.google.com/calendar/embed?src=1f439e7aa260c469cb2105d6e8bd9ccd4aa38bf389a48bd06a917bd947a8a43a%40group.calendar.google.com&ctz=Asia%2FManila"
   },
-  "generatedAt": "2026-09-24T00:06:00.123Z",
+  "generatedAt": "2026-09-24T04:03:57.185Z",
+  "contentHash": "d04f9db2e12169ee",
   "range": {
     "start": "2026-09-16",
     "end": "2026-12-18"
@@ -65,7 +66,7 @@
       "description": "Formulating programmes, projects, activities and the budget behind them.",
       "ink": "#ffffff",
       "inkDark": "#ffffff",
-      "count": 8
+      "count": 17
     }
   ],
   "units": [
@@ -125,6 +126,123 @@
       "updated": "2026-09-15T03:45:37.000Z"
     },
     {
+      "id": "2hhjmt4vqjusnur6kq5e8bj4ct@google.com",
+      "title": "Planning Meeting re: Proposed Plans, Programs, and Corresponding Budgetary Requirements for CY 2027",
+      "category": "planning",
+      "allDay": false,
+      "start": "2026-09-28",
+      "end": "2026-09-28",
+      "startTime": "08:00",
+      "endTime": "12:00",
+      "durationDays": 1,
+      "responsible": [],
+      "output": null,
+      "notes": [
+        "September 28, 2026 (AM)",
+        "Treasury Division - Relivie T. Marcelo",
+        "General Accounting and Budget Division - Analiza V. Bulaon"
+      ],
+      "status": "CONFIRMED",
+      "updated": "2026-09-24T03:43:05.000Z"
+    },
+    {
+      "id": "59bhkiu34tf0i1423rc4np9vrk@google.com",
+      "title": "Planning Meeting re: Proposed Plans, Programs, and Corresponding Budgetary Requirements for CY 2027",
+      "category": "planning",
+      "allDay": false,
+      "start": "2026-09-28",
+      "end": "2026-09-28",
+      "startTime": "13:00",
+      "endTime": "17:00",
+      "durationDays": 1,
+      "responsible": [],
+      "output": null,
+      "notes": [
+        "September 28, 2026 (PM)",
+        "Sanitation Division & Planning and Design Division - Engr. Norman Oliver P. Ragil"
+      ],
+      "status": "CONFIRMED",
+      "updated": "2026-09-24T03:42:27.000Z"
+    },
+    {
+      "id": "624vakalhpi4gvdepv860mjtve@google.com",
+      "title": "Planning Meeting re: Proposed Plans, Programs, and Corresponding Budgetary Requirements for CY 2027",
+      "category": "planning",
+      "allDay": false,
+      "start": "2026-09-29",
+      "end": "2026-09-29",
+      "startTime": "08:00",
+      "endTime": "12:00",
+      "durationDays": 1,
+      "responsible": [],
+      "output": null,
+      "notes": [
+        "September 29, 2026 (AM)",
+        "General Services Division - Jose Rainier Manuel R. Evangelista",
+        "Property and Warehousing and Materials and Equipment Quality Control Division - Glenda S. Nolasco"
+      ],
+      "status": "CONFIRMED",
+      "updated": "2026-09-24T03:44:57.000Z"
+    },
+    {
+      "id": "5ahi6sh1nkg5fsnpnauev6ugd0@google.com",
+      "title": "Planning Meeting re: Proposed Plans, Programs, and Corresponding Budgetary Requirements for CY 2027",
+      "category": "planning",
+      "allDay": false,
+      "start": "2026-09-29",
+      "end": "2026-09-29",
+      "startTime": "13:00",
+      "endTime": "17:00",
+      "durationDays": 1,
+      "responsible": [],
+      "output": null,
+      "notes": [
+        "September 29, 2026 (PM)",
+        "Water Distribution and Non-Revenue Water Management Division - Engr. Joel G. Mestidio",
+        "Pipelines and Leakage Control Division - Engr. Danilo F. Torres"
+      ],
+      "status": "CONFIRMED",
+      "updated": "2026-09-24T03:46:43.000Z"
+    },
+    {
+      "id": "5j7vo66ebg3av5buucpomnvrvv@google.com",
+      "title": "Planning Meeting re: Proposed Plans, Programs, and Corresponding Budgetary Requirements for CY 2027",
+      "category": "planning",
+      "allDay": false,
+      "start": "2026-09-30",
+      "end": "2026-09-30",
+      "startTime": "08:00",
+      "endTime": "12:00",
+      "durationDays": 1,
+      "responsible": [],
+      "output": null,
+      "notes": [
+        "September 30, 2026 (AM)",
+        "Water Production and Electro-Mechanical Division - Rodolfo S. Cruz, Jr."
+      ],
+      "status": "CONFIRMED",
+      "updated": "2026-09-24T03:47:50.000Z"
+    },
+    {
+      "id": "4o1dlahuivf98sta3pu8ci8m53@google.com",
+      "title": "Planning Meeting re: Proposed Plans, Programs, and Corresponding Budgetary Requirements for CY 2027",
+      "category": "planning",
+      "allDay": false,
+      "start": "2026-09-30",
+      "end": "2026-09-30",
+      "startTime": "13:00",
+      "endTime": "17:00",
+      "durationDays": 1,
+      "responsible": [],
+      "output": null,
+      "notes": [
+        "September 30, 2026 (PM)",
+        "Water Quality Division - Jennielyn P. Santiago"
+      ],
+      "status": "CONFIRMED",
+      "updated": "2026-09-24T03:49:11.000Z"
+    },
+    {
       "id": "5d159d5ss4f8geakqbcitu1csi@google.com",
       "title": "Workforce Planning",
       "category": "planning",
@@ -139,6 +257,66 @@
       "notes": [],
       "status": "CONFIRMED",
       "updated": "2026-09-16T05:20:18.000Z"
+    },
+    {
+      "id": "5m7ggrvn04qkhdk940alr9u726@google.com",
+      "title": "Planning Meeting re: Proposed Plans, Programs, and Corresponding Budgetary Requirements for CY 2027",
+      "category": "planning",
+      "allDay": false,
+      "start": "2026-10-01",
+      "end": "2026-10-01",
+      "startTime": "08:00",
+      "endTime": "12:00",
+      "durationDays": 1,
+      "responsible": [],
+      "output": null,
+      "notes": [
+        "October 1, 2026 (AM)",
+        "Manpower Planning & Recruitment Division - May Anne R. Cruz",
+        "Training and Development Division - Rodolfo T. de Leon"
+      ],
+      "status": "CONFIRMED",
+      "updated": "2026-09-24T03:50:48.000Z"
+    },
+    {
+      "id": "5e1ljotjs7g27ujop91to6d6cf@google.com",
+      "title": "Planning Meeting re: Proposed Plans, Programs, and Corresponding Budgetary Requirements for CY 2027",
+      "category": "planning",
+      "allDay": false,
+      "start": "2026-10-01",
+      "end": "2026-10-01",
+      "startTime": "13:00",
+      "endTime": "17:00",
+      "durationDays": 1,
+      "responsible": [],
+      "output": null,
+      "notes": [
+        "October 1, 2026 (PM)",
+        "New Service Connection and Customer Care Division & Accounts and Billing Division - Cecilia G. Fabian"
+      ],
+      "status": "CONFIRMED",
+      "updated": "2026-09-24T03:52:08.000Z"
+    },
+    {
+      "id": "5fuc0cc70vmgto3aorsroms8as@google.com",
+      "title": "Planning Meeting re: Proposed Plans, Programs, and Corresponding Budgetary Requirements for CY 2027",
+      "category": "planning",
+      "allDay": true,
+      "start": "2026-10-02",
+      "end": "2026-10-02",
+      "startTime": null,
+      "endTime": null,
+      "durationDays": 1,
+      "responsible": [],
+      "output": null,
+      "notes": [
+        "October 2, 2026 (AM)",
+        "Corporate Planning Department - Eloisa E. Ramos",
+        "Management Information Services Division - Cristom E. Lumaban",
+        "Legal Services and Public Information Division - Atty. Jose Angelo P. Pagkanlungan"
+      ],
+      "status": "CONFIRMED",
+      "updated": "2026-09-24T03:54:46.000Z"
     },
     {
       "id": "5botuoopo4m6b109clk3125r5v@google.com",
