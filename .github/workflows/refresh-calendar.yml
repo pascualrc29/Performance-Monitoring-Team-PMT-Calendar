@@ -38,24 +38,54 @@ jobs:
         with:
           node-version: "22"
 
-      - name: Read the calendar feed
-        run: node scripts/build-data.mjs
-
+      # The feed is read inside the loop rather than in a step of its own: a
+      # rejected push means the checkout was stale, so the snapshot has to be
+      # rebuilt on top of whatever the branch actually holds now, not replayed
+      # onto the commit the runner happened to start from.
       - name: Commit the snapshot if the schedule changed
         id: commit
+        shell: bash
+        env:
+          BRANCH: ${{ github.ref_name }}
         run: |
-          if git diff --quiet -- data/; then
-            echo "Calendar unchanged; nothing to commit."
-            echo "changed=false" >> "$GITHUB_OUTPUT"
-            exit 0
-          fi
-          git config user.name "github-actions[bot]"
-          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add data/
-          git commit -m "chore(data): refresh PMT calendar snapshot"
-          git push
-          echo "changed=true" >> "$GITHUB_OUTPUT"
-          echo "sha=$(git rev-parse HEAD)" >> "$GITHUB_OUTPUT"
+          set -euo pipefail
+
+          # Retry because another refresh may push between fetch and push.
+          for attempt in 1 2 3; do
+            # Explicit refspec: the shallow checkout only configures a fetch
+            # refspec for this branch, and a bare `git fetch origin "$BRANCH"`
+            # is not guaranteed to move origin/$BRANCH — if it did not, the
+            # reset below would fail the job instead of retrying.
+            git fetch origin "+refs/heads/$BRANCH:refs/remotes/origin/$BRANCH"
+
+            # Keep the local checkout current before generating/committing data.
+            git reset --hard "origin/$BRANCH"
+
+            node scripts/build-data.mjs
+
+            if git diff --quiet -- data/; then
+              echo "Calendar unchanged; nothing to commit."
+              echo "changed=false" >> "$GITHUB_OUTPUT"
+              exit 0
+            fi
+
+            git config user.name "github-actions[bot]"
+            git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+            git add data/
+            git commit -m "chore(data): refresh PMT calendar snapshot"
+
+            if git push origin "HEAD:$BRANCH"; then
+              echo "changed=true" >> "$GITHUB_OUTPUT"
+              echo "sha=$(git rev-parse HEAD)" >> "$GITHUB_OUTPUT"
+              exit 0
+            fi
+
+            echo "Push rejected on attempt $attempt; retrying with the latest remote branch."
+            git reset --hard "origin/$BRANCH"
+          done
+
+          echo "Unable to push after 3 attempts."
+          exit 1
 
   # Publishes the commit the refresh just made. Mirrors deploy-pages.yml; the
   # two are kept in step deliberately rather than shared, because a reusable
