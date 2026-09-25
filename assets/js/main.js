@@ -10,7 +10,7 @@ import {
   spanDays, startOfMonth,
 } from "./dates.js";
 import {
-  ALL_YEARS, filterEvents, LIFECYCLE_LABEL, loadCalendar, paintStage, stageStyle,
+  ALL_YEARS, filterEvents, loadCalendar, paintStage, stageStyle,
   yearsCovered,
 } from "./store.js";
 import { createDetailDrawer } from "./detail.js";
@@ -26,7 +26,7 @@ const VIEWS = [
   { id: "table", label: "Table", key: "4" },
 ];
 
-const LIFECYCLES = ["active", "upcoming", "done"];
+const AGENDA_TABS = ["active", "completed"];
 const THEME_KEY = "bwd-pmt-theme";
 
 const $ = (selector, scope = document) => scope.querySelector(selector);
@@ -90,7 +90,9 @@ function defaultState() {
     query: "",
     categories: new Set(),
     units: new Set(),
-    lifecycles: new Set(),
+    // The agenda's own sub-tab. It is not a global filter: the month grid and
+    // the timeline still draw the whole cycle, past activities included.
+    agendaTab: "active",
     sort: { key: "dates", direction: "asc" },
   };
 }
@@ -124,9 +126,8 @@ function readHash() {
   for (const unit of (params.get("unit") ?? "").split("~").filter(Boolean)) {
     if (knownUnits.has(unit)) next.units.add(unit);
   }
-  for (const life of (params.get("life") ?? "").split(",").filter(Boolean)) {
-    if (LIFECYCLES.includes(life)) next.lifecycles.add(life);
-  }
+  const tab = params.get("tab");
+  if (AGENDA_TABS.includes(tab)) next.agendaTab = tab;
 
   const sort = params.get("sort");
   if (sort) {
@@ -149,7 +150,9 @@ function writeHash({ replace = false } = {}) {
   if (state.query.trim()) params.set("q", state.query.trim());
   if (state.categories.size) params.set("cat", [...state.categories].join(","));
   if (state.units.size) params.set("unit", [...state.units].join("~"));
-  if (state.lifecycles.size) params.set("life", [...state.lifecycles].join(","));
+  if (state.view === "agenda" && state.agendaTab !== "active") {
+    params.set("tab", state.agendaTab);
+  }
 
   const hash = `#${params}`;
   if (location.hash === hash) return;
@@ -298,21 +301,8 @@ function buildChrome() {
     setState({ units: unitSelect.value ? new Set([unitSelect.value]) : new Set() });
   });
 
-  /* status filter */
-  const statusSelect = $("#status-filter");
-  statusSelect.innerHTML = `<option value="">Any status</option>`;
-  for (const life of LIFECYCLES) {
-    const option = document.createElement("option");
-    option.value = life;
-    option.textContent = LIFECYCLE_LABEL[life];
-    statusSelect.append(option);
-  }
-  statusSelect.addEventListener("change", () => {
-    setState({ lifecycles: statusSelect.value ? new Set([statusSelect.value]) : new Set() });
-  });
-
   $("#reset-filters").addEventListener("click", () =>
-    setState({ query: "", categories: new Set(), units: new Set(), lifecycles: new Set() }),
+    setState({ query: "", categories: new Set(), units: new Set() }),
   );
 
   /* refresh */
@@ -323,6 +313,11 @@ function buildChrome() {
      view, their clicks went nowhere. */
   const view = $("#view");
   document.querySelector(".shell").addEventListener("click", (clickEvent) => {
+    const tab = clickEvent.target.closest("[data-agenda-tab]");
+    if (tab) {
+      setState({ agendaTab: tab.dataset.agendaTab });
+      return;
+    }
     const target = clickEvent.target.closest('[data-action="open-event"]');
     if (!target) return;
     const event = data.events.find((item) => item.id === target.dataset.eventId);
@@ -530,7 +525,6 @@ function syncControls() {
   }
 
   $("#unit-filter").value = [...state.units][0] ?? "";
-  $("#status-filter").value = [...state.lifecycles][0] ?? "";
   $("#group-by").value = state.groupBy;
 
   $("#month-nav").hidden = state.view !== "month";
@@ -543,7 +537,7 @@ function syncControls() {
     state.view === "month" ? MONTHS[Number(state.anchor.slice(5, 7)) - 1] : "";
 
   const filterCount =
-    (state.query.trim() ? 1 : 0) + state.categories.size + state.units.size + state.lifecycles.size;
+    (state.query.trim() ? 1 : 0) + state.categories.size + state.units.size;
   $("#reset-filters").hidden = filterCount === 0;
   $("#filter-count").textContent = filterCount ? `${filterCount} active` : "";
 }
@@ -664,7 +658,6 @@ function visibleEvents() {
     year: state.period,
     categories: state.categories,
     units: state.units,
-    lifecycles: state.lifecycles,
   });
 }
 
@@ -699,6 +692,7 @@ function render() {
       events,
       today: data.today,
       categoryById: data.categoryById,
+      tab: state.agendaTab,
     });
   } else {
     result = renderTable(container, {
@@ -717,7 +711,6 @@ function render() {
             query: state.query,
             categories: state.categories,
             units: state.units,
-            lifecycles: state.lifecycles,
           }).length;
 
     container.innerHTML =
@@ -726,7 +719,7 @@ function render() {
         inOtherYears
           ? `Nothing matches in ${escapeHtml(state.period)}, but ${inOtherYears} ` +
             `${inOtherYears === 1 ? "activity matches" : "activities match"} elsewhere in the cycle.`
-          : "Try re-enabling an SPMS stage in the legend below, or clearing the unit and status filters."
+          : "Try re-enabling an SPMS stage in the legend below, or clearing the unit filter."
       }</p>` +
       `<div class="notice__actions">${
         inOtherYears
@@ -736,7 +729,7 @@ function render() {
 
     $("#empty-widen")?.addEventListener("click", () => setPeriod(ALL_YEARS));
     $("#empty-reset").addEventListener("click", () =>
-      setState({ query: "", categories: new Set(), units: new Set(), lifecycles: new Set() }),
+      setState({ query: "", categories: new Set(), units: new Set() }),
     );
   }
 

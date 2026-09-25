@@ -15,22 +15,44 @@ import { LIFECYCLE_LABEL, paintStage, stageStyle } from "../store.js";
  * Agenda
  * ---------------------------------------------------------------- */
 
-export function renderAgenda(container, { events, today, categoryById }) {
+/**
+ * The agenda splits on lifecycle rather than filtering on it: Active carries
+ * everything still ahead of or around today, Completed everything behind it.
+ * Only this view splits — the month grid and the timeline still draw the whole
+ * cycle, because a calendar that hides last week is not a calendar.
+ */
+const TABS = [
+  { id: "active", label: "Active", holds: (event) => event.lifecycle !== "done" },
+  { id: "completed", label: "Completed", holds: (event) => event.lifecycle === "done" },
+];
+
+export function renderAgenda(container, { events, today, categoryById, tab = "active" }) {
   container.innerHTML = "";
 
-  if (!events.length) {
-    return { summary: "No activities match the current filters" };
-  }
-
-  const sorted = [...events].sort(
-    (a, b) => a.start.localeCompare(b.start) || a.title.localeCompare(b.title),
-  );
-
+  const current = TABS.find((entry) => entry.id === tab) ?? TABS[0];
   const root = document.createElement("div");
   root.className = "agenda";
+  root.append(agendaTabs(events, current));
 
+  const sorted = events
+    .filter(current.holds)
+    .sort((a, b) => a.start.localeCompare(b.start) || a.title.localeCompare(b.title));
+
+  if (!sorted.length) {
+    const empty = document.createElement("p");
+    empty.className = "agenda__empty";
+    empty.textContent =
+      current.id === "completed"
+        ? "Nothing has finished yet — every activity is still active."
+        : "Nothing active. Every activity in view has already finished.";
+    root.append(empty);
+    container.append(root);
+    return { summary: `${current.label}: nothing to list` };
+  }
+
+  // No "from here on" divider any more: the tab already says which side of
+  // today you are looking at, so the rule only ever landed above the first card.
   let currentMonth = null;
-  let nextMarkerPlaced = false;
 
   for (const event of sorted) {
     const month = startOfMonth(event.start);
@@ -46,21 +68,37 @@ export function renderAgenda(container, { events, today, categoryById }) {
       root.append(heading);
     }
 
-    if (!nextMarkerPlaced && event.end >= today) {
-      nextMarkerPlaced = true;
-      const marker = document.createElement("p");
-      marker.className = "agenda__now";
-      marker.innerHTML = `<span>From here on — today is ${formatDay(today)}</span>`;
-      root.append(marker);
-    }
-
     root.append(agendaCard(event, today, categoryById));
   }
 
   container.append(root);
   return {
-    summary: `${sorted.length} ${sorted.length === 1 ? "activity" : "activities"} listed`,
+    summary: `${current.label}: ${sorted.length} ${
+      sorted.length === 1 ? "activity" : "activities"
+    } listed`,
   };
+}
+
+function agendaTabs(events, current) {
+  const bar = document.createElement("div");
+  bar.className = "subtabs";
+  bar.setAttribute("role", "group");
+  bar.setAttribute("aria-label", "Show activities by status");
+
+  for (const entry of TABS) {
+    const count = events.filter(entry.holds).length;
+    const button = document.createElement("button");
+    button.type = "button";
+    button.className = "subtab";
+    button.dataset.agendaTab = entry.id;
+    const active = entry.id === current.id;
+    button.classList.toggle("is-active", active);
+    button.setAttribute("aria-current", active ? "true" : "false");
+    button.innerHTML =
+      `<span>${entry.label}</span><span class="subtab__count">${count}</span>`;
+    bar.append(button);
+  }
+  return bar;
 }
 
 function agendaCard(event, today, categoryById) {
