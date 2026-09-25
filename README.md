@@ -75,17 +75,24 @@ What the dialog offers depends on the device:
 | --- | --- |
 | **Android** (Chrome, Edge, Samsung Internet) | A real **Install** button, wired to the browser's own prompt |
 | **Windows / ChromeOS** (Chrome, Edge) | The same **Install** button |
-| **iPhone / iPad** (Safari) | Safari has no install API, so it shows the steps: **Share → Add to Home Screen** |
+| **Android** (Firefox) | No install API, so it shows the steps: **⋮ → Install** |
+| **iPhone / iPad** (Safari) | Likewise: **Share → Add to Home Screen** |
 | **macOS** (Safari 17+) | Likewise: **File → Add to Dock** |
-| **Anything else** (Firefox, older Safari) | Nothing — an offer that cannot be acted on is worse than none |
+| **Desktop Firefox, in-app browsers** | Nothing — they cannot install, and an offer that cannot be acted on is worse than none |
 
-Detection leans on the browser wherever it can: the **Install** button appears
-only once `beforeinstallprompt` has fired, which is Chromium telling us the site
-really is installable, rather than us guessing from the user agent. The user
-agent is consulted only for the two Safari cases, which have no such event —
-and there iPadOS needs care, because since version 13 it reports a *Mac* user
-agent by default. `navigator.maxTouchPoints` is what tells an iPad apart from a
-real Mac.
+Detection leans on the browser wherever it can: on Chromium the offer appears
+only once `beforeinstallprompt` has fired, which is the browser telling us the
+site really is installable, rather than us guessing from the user agent. That
+event can fire before the ES modules have run and cannot be replayed, so a
+small inline script in `<head>` catches it and hands it on — without that, the
+offer was lost on a fast connection, which on Android is the common case.
+
+The user agent is consulted only for browsers that fire no such event and can
+still install by hand: Safari on iOS and macOS, and Firefox on Android.
+Desktop Firefox is excluded by name because it cannot install a web app at all.
+iPadOS needs particular care — since version 13 it reports a *Mac* user agent
+by default, so an iPad and a Mac are indistinguishable by string alone;
+`navigator.maxTouchPoints` is what separates them.
 
 Installed, it opens in its own window with the district seal as its icon and
 without browser chrome, and it carries shortcuts straight to the timeline, the

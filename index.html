@@ -44,6 +44,18 @@
       crossorigin
     />
     <link rel="stylesheet" href="assets/css/styles.css" />
+
+    <script>
+      // Android Chrome can fire beforeinstallprompt before the ES module at the
+      // foot of this page has run, and the event cannot be replayed. Catch it
+      // here, where nothing is waiting on the network, and hand it to pwa.js.
+      // preventDefault() also suppresses Chromium's own mini-infobar.
+      window.__installEvent = null;
+      window.addEventListener("beforeinstallprompt", function (event) {
+        event.preventDefault();
+        window.__installEvent = event;
+      });
+    </script>
   </head>
 
   <body>
