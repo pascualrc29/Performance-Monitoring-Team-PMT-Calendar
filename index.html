@@ -8,9 +8,8 @@
       name="description"
       content="Interactive calendar and Gantt timeline of the Performance Monitoring Team (PMT) activities of Baliwag Water District — the Strategic Performance Management System cycle, stage by stage."
     />
-    <meta name="theme-color" content="#183C90" media="(prefers-color-scheme: light)" />
-    <meta name="theme-color" content="#0E1730" media="(prefers-color-scheme: dark)" />
-    <meta name="color-scheme" content="light dark" />
+    <meta name="theme-color" content="#183C90" />
+    <meta name="color-scheme" content="light" />
 
     <link rel="icon" href="assets/img/favicon.ico" sizes="any" />
     <link rel="icon" href="assets/img/bwd-logo-32.png" type="image/png" />
@@ -45,17 +44,6 @@
       crossorigin
     />
     <link rel="stylesheet" href="assets/css/styles.css" />
-
-    <script>
-      // Light is the default; only a viewer who chose dark gets dark. Stamped
-      // here rather than in main.js so it lands before the first paint.
-      try {
-        var storedTheme = localStorage.getItem("bwd-pmt-theme");
-        document.documentElement.dataset.theme = storedTheme === "dark" ? "dark" : "light";
-      } catch (error) {
-        document.documentElement.dataset.theme = "light";
-      }
-    </script>
   </head>
 
   <body>
@@ -105,25 +93,6 @@
             </svg>
             <span class="btn__label">Google Calendar</span>
           </a>
-          <button
-            class="themeswitch"
-            id="theme-toggle"
-            type="button"
-            role="switch"
-            aria-checked="false"
-            aria-label="Dark mode"
-          >
-            <span class="themeswitch__track">
-              <svg class="themeswitch__icon themeswitch__icon--sun" viewBox="0 0 20 20" aria-hidden="true">
-                <circle cx="10" cy="10" r="3.4" />
-                <path d="M10 2.2v1.6M10 16.2v1.6M2.2 10h1.6M16.2 10h1.6M4.6 4.6l1.1 1.1M14.3 14.3l1.1 1.1M15.4 4.6l-1.1 1.1M5.7 14.3l-1.1 1.1" />
-              </svg>
-              <svg class="themeswitch__icon themeswitch__icon--moon" viewBox="0 0 20 20" aria-hidden="true">
-                <path d="M16 12.4A7 7 0 1 1 7.6 4a5.6 5.6 0 0 0 8.4 8.4Z" />
-              </svg>
-              <span class="themeswitch__thumb"></span>
-            </span>
-          </button>
         </div>
       </div>
     </header>

@@ -15,7 +15,7 @@ table.
 | --- | --- |
 | **Month** | The familiar calendar grid. Multi-day activities run as continuous bars across the weeks, packed into lanes so nothing overlaps. |
 | **Timeline** | A Gantt chart of the whole cycle. Activities are grouped into SPMS stages (or by responsible unit), with a today line, elapsed-time shading on running activities, and four zoom levels from *Fit all* down to day resolution. |
-| **Agenda** | A chronological list grouped by month, with the responsible units and the expected output of each activity. This is what a phone opens on, since a month grid is unreadable at that width. |
+| **Agenda** | A chronological list grouped by month, with the responsible units and the expected output of each activity. Two sub-tabs: **Active** (in progress and upcoming, the default) and **Completed**. The activity running today is tinted so it reads ahead of the rest. This is what a phone opens on, since a month grid is unreadable at that width. |
 | **Table** | Every field in a sortable, printable table — also the accessible fallback for the two visual views. |
 
 Across all of them:
@@ -39,8 +39,9 @@ Across all of them:
   URL hash, so `#view=timeline&zoom=weeks&cat=targets` is a bookmarkable link.
 - **Install it** on a phone, tablet or desktop and use it offline — see
   [Installing it](#installing-it).
-- **Light and dark themes** (light by default, switched with the slider in the
-  header), keyboard shortcuts, and a layout that works from phone width upward.
+- **One light theme.** The site renders light whatever the device is set to;
+  there is no dark mode and no theme switch.
+- **Keyboard shortcuts** and a layout that works from phone width upward.
 - **The page tracks the window.** Content runs to the full width of the screen,
   with a gutter that grows with the viewport, and only stops widening past
   2280px where a full-bleed row stops being readable. A short month leaves the
@@ -254,13 +255,17 @@ The brand colours are taken from the district seal: navy `#183C90` and yellow
 published through `data/events.json`, which the page turns into `--cat-*` CSS
 variables at load.
 
-Both the light and the dark sets were checked with a palette validator on the
-**all-pairs** comparison against the exact chart surfaces this site uses
-(`#F4F7FC` light, `#0D1A38` dark). Every stage colour clears the lightness band,
-the chroma floor, 3:1 contrast against its surface, and — the point of the
-exercise — stays separable under protanopia and deuteranopia (worst pair ΔE 10.1
-light / 10.5 dark against a target of 8; worst normal-vision pair 17.8 / 18.3
-against a floor of 15).
+The palette was checked with a validator on the **all-pairs** comparison against
+the exact chart surface this site uses (`#F4F7FC`). Every stage colour clears
+the lightness band, the chroma floor, 3:1 contrast against its surface, and —
+the point of the exercise — stays separable under protanopia and deuteranopia
+(worst pair ΔE 10.1 against a target of 8; worst normal-vision pair 17.8 against
+a floor of 15).
+
+`build-data.mjs` still computes a dark variant of each stage colour and
+publishes it in `data/events.json`. Nothing reads it now that dark mode is gone;
+it is left in place so the palette could be brought back without redoing the
+validation.
 
 Because colour alone should never carry meaning, the stage is also named in the
 legend, in the timeline's row labels, in the table and on the activity panel.

@@ -116,68 +116,6 @@
   --font-num: "SF Mono", ui-monospace, "Cascadia Mono", "Roboto Mono", Menlo, monospace;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root:not([data-theme="light"]) {
-    color-scheme: dark;
-
-    --page: #060c1c;
-    --surface: #101d3d;
-    --surface-1: #0d1a38; /* the validated dark chart surface */
-    --surface-2: #17264b;
-    --accent-ink: #9db6ff;
-    --surface-sunken: #0a1430;
-    --header: linear-gradient(112deg, #060f26 0%, #102455 58%, #16337a 100%);
-
-    --text-primary: #f0f5ff;
-    --text-secondary: #b3c1de;
-    --text-muted: #8795b6;
-    --text-on-brand: #ffffff;
-    --text-on-brand-soft: #b8c7e8;
-
-    --border: #263a68;
-    --border-strong: #37507f;
-    --border-faint: #1c2c55;
-
-    --focus: #7da0ff;
-    --today: #ff7a68;
-    --cat-fallback: #8a93a8;
-
-    --shadow-sm: 0 1px 1px rgb(0 0 0 / 0.3);
-    --shadow: 0 1px 2px rgb(0 0 0 / 0.4), 0 12px 30px -14px rgb(0 0 0 / 0.7);
-    --shadow-lg: 0 20px 64px -12px rgb(0 0 0 / 0.75);
-  }
-}
-
-:root[data-theme="dark"] {
-  color-scheme: dark;
-
-  --page: #060c1c;
-  --surface: #101d3d;
-  --surface-1: #0d1a38;
-  --surface-2: #17264b;
-  --accent-ink: #9db6ff;
-  --surface-sunken: #0a1430;
-  --header: linear-gradient(112deg, #060f26 0%, #102455 58%, #16337a 100%);
-
-  --text-primary: #f0f5ff;
-  --text-secondary: #b3c1de;
-  --text-muted: #8795b6;
-  --text-on-brand: #ffffff;
-  --text-on-brand-soft: #b8c7e8;
-
-  --border: #263a68;
-  --border-strong: #37507f;
-  --border-faint: #1c2c55;
-
-  --focus: #7da0ff;
-  --today: #ff7a68;
-  --cat-fallback: #8a93a8;
-
-  --shadow-sm: 0 1px 1px rgb(0 0 0 / 0.3);
-  --shadow: 0 1px 2px rgb(0 0 0 / 0.4), 0 12px 30px -14px rgb(0 0 0 / 0.7);
-  --shadow-lg: 0 20px 64px -12px rgb(0 0 0 / 0.75);
-}
-
 /* --------------------------------------------------------------- base */
 
 *,
@@ -499,80 +437,6 @@ svg {
   color: var(--text-primary);
 }
 
-/* --------------------------------------------------------------- theme switch */
-
-.themeswitch {
-  padding: 4px;
-  border: 0;
-  border-radius: var(--radius-pill);
-  background: none;
-  cursor: pointer;
-  line-height: 0;
-}
-
-.themeswitch__track {
-  position: relative;
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  place-items: center;
-  width: 60px;
-  height: 30px;
-  padding: 0 3px;
-  border: 1px solid rgb(255 255 255 / 0.28);
-  border-radius: var(--radius-pill);
-  background: rgb(255 255 255 / 0.14);
-  transition: background 160ms ease, border-color 160ms ease;
-}
-
-.themeswitch:hover .themeswitch__track {
-  background: rgb(255 255 255 / 0.22);
-}
-
-.themeswitch__icon {
-  position: relative;
-  z-index: 1;
-  width: 15px;
-  height: 15px;
-  color: var(--text-on-brand);
-  transition: opacity 160ms ease;
-}
-
-/* The icon under the thumb dims; the one the thumb is heading toward stays lit. */
-.themeswitch__icon--moon {
-  opacity: 0.5;
-}
-
-.themeswitch[aria-checked="true"] .themeswitch__icon--sun {
-  opacity: 0.5;
-}
-
-.themeswitch[aria-checked="true"] .themeswitch__icon--moon {
-  opacity: 1;
-}
-
-.themeswitch__thumb {
-  position: absolute;
-  top: 3px;
-  left: 3px;
-  z-index: 0;
-  width: 24px;
-  height: 22px;
-  border-radius: var(--radius-pill);
-  background: var(--brand-yellow);
-  box-shadow: 0 1px 3px rgb(0 0 0 / 0.3);
-  transition: translate 180ms cubic-bezier(0.3, 0.8, 0.3, 1), background 160ms ease;
-}
-
-.themeswitch[aria-checked="true"] .themeswitch__thumb {
-  translate: 28px 0;
-  background: #cfd9f5;
-}
-
-.themeswitch:focus-visible {
-  outline: 2px solid var(--brand-yellow);
-  outline-offset: 2px;
-}
-
 /* The icon spins only while a refresh is in flight. */
 .btn--refresh.is-busy {
   color: var(--text-muted);
@@ -694,16 +558,6 @@ svg {
 .hero--next .hero__btn {
   border-left-color: var(--gold);
   background: linear-gradient(100deg, color-mix(in oklab, var(--gold) 17%, var(--surface)), var(--surface) 58%);
-}
-
-@media (prefers-color-scheme: dark) {
-  :root:not([data-theme="light"]) .hero--next .hero__btn {
-    background: linear-gradient(100deg, var(--surface-2), var(--surface) 60%);
-  }
-}
-
-:root[data-theme="dark"] .hero--next .hero__btn {
-  background: linear-gradient(100deg, var(--surface-2), var(--surface) 60%);
 }
 
 .hero__eyebrow {
@@ -1130,16 +984,6 @@ svg {
 .pill--done {
   background: var(--surface-sunken);
   color: var(--text-muted);
-}
-
-@media (prefers-color-scheme: dark) {
-  :root:not([data-theme="light"]) .pill--upcoming {
-    color: color-mix(in oklab, var(--brand-yellow) 78%, #fff);
-  }
-}
-
-:root[data-theme="dark"] .pill--upcoming {
-  color: color-mix(in oklab, var(--brand-yellow) 78%, #fff);
 }
 
 /* --------------------------------------------------------------- toast */
@@ -2069,36 +1913,6 @@ kbd {
   background: color-mix(in oklab, var(--brand-blue) 17%, var(--surface));
 }
 
-/* Dark mode paints on a dark surface, where the same mix reads as sludge —
-   the tint has to come up and the ink stays the plain body ink. */
-@media (prefers-color-scheme: dark) {
-  :root:not([data-theme="light"]) .acard.is-active {
-    background: color-mix(in oklab, var(--brand-blue) 22%, var(--surface));
-  }
-
-  :root:not([data-theme="light"]) .acard.is-active .acard__day,
-  :root:not([data-theme="light"]) .acard.is-active .acard__title {
-    color: var(--text-primary);
-  }
-
-  :root:not([data-theme="light"]) .acard.is-active:hover {
-    background: color-mix(in oklab, var(--brand-blue) 30%, var(--surface));
-  }
-}
-
-:root[data-theme="dark"] .acard.is-active {
-  background: color-mix(in oklab, var(--brand-blue) 22%, var(--surface));
-}
-
-:root[data-theme="dark"] .acard.is-active .acard__day,
-:root[data-theme="dark"] .acard.is-active .acard__title {
-  color: var(--text-primary);
-}
-
-:root[data-theme="dark"] .acard.is-active:hover {
-  background: color-mix(in oklab, var(--brand-blue) 30%, var(--surface));
-}
-
 .acard__when {
   display: grid;
   justify-items: center;
@@ -2693,7 +2507,6 @@ kbd {
   .hero__title {
     font-size: 1.1rem;
   }
-
 
   .acard {
     grid-template-columns: 44px minmax(0, 1fr);

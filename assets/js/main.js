@@ -27,7 +27,6 @@ const VIEWS = [
 ];
 
 const AGENDA_TABS = ["active", "completed"];
-const THEME_KEY = "bwd-pmt-theme";
 
 const $ = (selector, scope = document) => scope.querySelector(selector);
 
@@ -37,36 +36,6 @@ let state = null;
 /** Fingerprint of the loaded schedule, so a refresh can say whether it changed. */
 let lastSignature = "";
 let refreshing = false;
-
-/* ---------------------------------------------------------------- *
- * Theme
- * ---------------------------------------------------------------- */
-
-/**
- * Light is the default — the inline script in index.html has already stamped
- * data-theme before first paint, so this only has to keep the switch in step.
- */
-function initTheme() {
-  syncThemeSwitch();
-  $("#theme-toggle").addEventListener("click", () => {
-    const next = document.documentElement.dataset.theme === "dark" ? "light" : "dark";
-    document.documentElement.dataset.theme = next;
-    try {
-      localStorage.setItem(THEME_KEY, next);
-    } catch {
-      // A private window can refuse storage; the choice then lasts this visit.
-    }
-    syncThemeSwitch();
-    if (state?.view === "timeline") render();
-  });
-}
-
-function syncThemeSwitch() {
-  const isDark = document.documentElement.dataset.theme === "dark";
-  const button = $("#theme-toggle");
-  button.setAttribute("aria-checked", String(isDark));
-  button.setAttribute("aria-label", isDark ? "Dark mode, on" : "Dark mode, off");
-}
 
 /* ---------------------------------------------------------------- *
  * State <-> URL
@@ -165,7 +134,6 @@ function writeHash({ replace = false } = {}) {
  * ---------------------------------------------------------------- */
 
 async function boot() {
-  initTheme();
   initPWA({
     onUpdate: (apply) => {
       // Say so before the reload, so the jump is not a surprise.
@@ -226,12 +194,10 @@ async function boot() {
  */
 function injectCategoryColors() {
   const light = [];
-  const dark = [];
   for (const category of data.categories) {
     // The ink is computed per stage at build time, so a solid stage-coloured
     // mark can carry a label that actually reads on it.
     light.push(`--cat-${category.id}: ${category.light}; --cat-${category.id}-ink: ${category.ink};`);
-    dark.push(`--cat-${category.id}: ${category.dark}; --cat-${category.id}-ink: ${category.inkDark};`);
   }
   let style = document.getElementById("category-colors");
   if (!style) {
@@ -239,10 +205,7 @@ function injectCategoryColors() {
     style.id = "category-colors";
     document.head.append(style);
   }
-  style.textContent =
-    `:root { ${light.join(" ")} }\n` +
-    `@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) { ${dark.join(" ")} } }\n` +
-    `:root[data-theme="dark"] { ${dark.join(" ")} }\n`;
+  style.textContent = `:root { ${light.join(" ")} }\n`;
 }
 
 /* ---------------------------------------------------------------- *
