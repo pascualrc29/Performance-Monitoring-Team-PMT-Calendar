@@ -1897,20 +1897,24 @@ kbd {
 }
 
 /* The one activity running right now is what the eye should land on first.
-   Blue to match its "In progress" pill, tinted over the surface rather than
-   over the stage colour so every stage emphasises identically. */
+   Warm, because the whole page is blue: a blue tint just read as a darker
+   patch of the same ground. --today is the accent this app already spends on
+   "now", and no SPMS stage is red, so nothing else in the page claims it —
+   green would have collided with Performance Contracting. Tinted over the
+   surface, not over the stage colour, so every stage emphasises identically. */
 .acard.is-active {
-  background: color-mix(in oklab, var(--brand-blue) 11%, var(--surface));
-  box-shadow: inset 0 0 0 1px color-mix(in oklab, var(--brand-blue) 24%, transparent);
+  background: color-mix(in oklab, var(--today) 9%, var(--surface));
+  box-shadow: inset 0 0 0 1px color-mix(in oklab, var(--today) 28%, transparent);
 }
 
-.acard.is-active .acard__day,
-.acard.is-active .acard__title {
-  color: color-mix(in oklab, var(--brand-blue) 72%, var(--text-primary));
+/* Only the date turns warm. A red *title* reads as an error, and the row
+   already says "In progress" in its pill. */
+.acard.is-active .acard__day {
+  color: color-mix(in oklab, var(--today) 78%, var(--text-primary));
 }
 
 .acard.is-active:hover {
-  background: color-mix(in oklab, var(--brand-blue) 17%, var(--surface));
+  background: color-mix(in oklab, var(--today) 15%, var(--surface));
 }
 
 .acard__when {
