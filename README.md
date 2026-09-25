@@ -61,14 +61,31 @@ Across all of them:
 ## Installing it
 
 The site is a progressive web app, so it installs from the browser on every
-platform without an app store:
+platform without an app store.
 
-| Platform | How |
+A first-time visitor is offered it once, in a dialog at the centre of the
+screen. **It never appears to someone already running the installed app** —
+`display-mode: standalone` and `navigator.standalone` are both checked before
+any of the install code runs. Dismissing it is remembered for 30 days, and the
+**Install** button stays in the header either way.
+
+What the dialog offers depends on the device:
+
+| Platform | What the dialog does |
 | --- | --- |
-| **Android** (Chrome, Edge, Samsung Internet) | Tap **Install** in the header, or *⋮ → Install app* |
-| **iPhone / iPad** (Safari) | **Share → Add to Home Screen** — the **Install** button shows these steps |
-| **Windows / ChromeOS** (Chrome, Edge) | Click **Install** in the header, or the install icon in the address bar |
-| **macOS** (Chrome, Edge, Safari 17+) | Click **Install**, or Safari's *File → Add to Dock* |
+| **Android** (Chrome, Edge, Samsung Internet) | A real **Install** button, wired to the browser's own prompt |
+| **Windows / ChromeOS** (Chrome, Edge) | The same **Install** button |
+| **iPhone / iPad** (Safari) | Safari has no install API, so it shows the steps: **Share → Add to Home Screen** |
+| **macOS** (Safari 17+) | Likewise: **File → Add to Dock** |
+| **Anything else** (Firefox, older Safari) | Nothing — an offer that cannot be acted on is worse than none |
+
+Detection leans on the browser wherever it can: the **Install** button appears
+only once `beforeinstallprompt` has fired, which is Chromium telling us the site
+really is installable, rather than us guessing from the user agent. The user
+agent is consulted only for the two Safari cases, which have no such event —
+and there iPadOS needs care, because since version 13 it reports a *Mac* user
+agent by default. `navigator.maxTouchPoints` is what tells an iPad apart from a
+real Mac.
 
 Installed, it opens in its own window with the district seal as its icon and
 without browser chrome, and it carries shortcuts straight to the timeline, the
