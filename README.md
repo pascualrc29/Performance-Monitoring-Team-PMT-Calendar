@@ -41,6 +41,10 @@ Across all of them:
   [Installing it](#installing-it).
 - **Light and dark themes** (light by default, switched with the slider in the
   header), keyboard shortcuts, and a layout that works from phone width upward.
+- **The page tracks the window.** Content runs to the full width of the screen,
+  with a gutter that grows with the viewport, and only stops widening past
+  2280px where a full-bleed row stops being readable. A short month leaves the
+  footer pinned to the bottom of the window rather than stranded mid-screen.
 - **On a phone**, swipe the month grid left or right to change month; the arrows
   and the year dropdown sit at the top of the toolbar, within thumb reach.
 
