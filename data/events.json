@@ -6,8 +6,8 @@
     "icsUrl": "https://calendar.google.com/calendar/ical/1f439e7aa260c469cb2105d6e8bd9ccd4aa38bf389a48bd06a917bd947a8a43a%40group.calendar.google.com/public/basic.ics",
     "googleUrl": "https://calendar.google.com/calendar/embed?src=1f439e7aa260c469cb2105d6e8bd9ccd4aa38bf389a48bd06a917bd947a8a43a%40group.calendar.google.com&ctz=Asia%2FManila"
   },
-  "generatedAt": "2026-09-24T05:13:49.107Z",
-  "contentHash": "011e8f4e097d1d9b",
+  "generatedAt": "2026-09-25T02:37:16.104Z",
+  "contentHash": "54597fb3bf821d65",
   "range": {
     "start": "2026-09-16",
     "end": "2026-12-18"
@@ -130,7 +130,7 @@
       "updated": "2026-09-15T03:45:37.000Z"
     },
     {
-      "id": "2hhjmt4vqjusnur6kq5e8bj4ct@google.com",
+      "id": "5pi43id9kojvn4tji3s2l6mrbv@google.com",
       "title": "Planning Meeting re: Proposed Plans, Programs, and Corresponding Budgetary Requirements for CY 2027",
       "category": "planning",
       "allDay": false,
@@ -144,31 +144,12 @@
       "responsible": [],
       "output": null,
       "notes": [
-        "Treasury Division - Relivie T. Marcelo",
-        "General Accounting and Budget Division - Analiza V. Bulaon"
+        "Corporate Planning Department - Eloisa E. Ramos",
+        "Management Information Services Division - Cristom E. Lumaban",
+        "Legal Services and Public Information Division - Atty. Jose Angelo P. Pagkanlungan"
       ],
       "status": "CONFIRMED",
-      "updated": "2026-09-24T05:08:21.000Z"
-    },
-    {
-      "id": "59bhkiu34tf0i1423rc4np9vrk@google.com",
-      "title": "Planning Meeting re: Proposed Plans, Programs, and Corresponding Budgetary Requirements for CY 2027",
-      "category": "planning",
-      "allDay": false,
-      "start": "2026-09-28",
-      "end": "2026-09-28",
-      "startTime": "13:00",
-      "endTime": "17:00",
-      "durationDays": 1,
-      "durationMinutes": 240,
-      "session": "PM",
-      "responsible": [],
-      "output": null,
-      "notes": [
-        "Sanitation Division & Planning and Design Division - Engr. Norman Oliver P. Ragil"
-      ],
-      "status": "CONFIRMED",
-      "updated": "2026-09-24T05:08:32.000Z"
+      "updated": "2026-09-25T02:36:05.000Z"
     },
     {
       "id": "624vakalhpi4gvdepv860mjtve@google.com",
@@ -312,26 +293,45 @@
       "updated": "2026-09-24T05:09:15.000Z"
     },
     {
-      "id": "5fuc0cc70vmgto3aorsroms8as@google.com",
+      "id": "2hhjmt4vqjusnur6kq5e8bj4ct@google.com",
       "title": "Planning Meeting re: Proposed Plans, Programs, and Corresponding Budgetary Requirements for CY 2027",
       "category": "planning",
-      "allDay": true,
+      "allDay": false,
       "start": "2026-10-02",
       "end": "2026-10-02",
-      "startTime": null,
-      "endTime": null,
+      "startTime": "08:00",
+      "endTime": "12:00",
       "durationDays": 1,
-      "durationMinutes": null,
-      "session": null,
+      "durationMinutes": 240,
+      "session": "AM",
       "responsible": [],
       "output": null,
       "notes": [
-        "Corporate Planning Department - Eloisa E. Ramos",
-        "Management Information Services Division - Cristom E. Lumaban",
-        "Legal Services and Public Information Division - Atty. Jose Angelo P. Pagkanlungan"
+        "Treasury Division - Relivie T. Marcelo",
+        "General Accounting and Budget Division - Analiza V. Bulaon"
       ],
       "status": "CONFIRMED",
-      "updated": "2026-09-24T05:09:25.000Z"
+      "updated": "2026-09-25T02:33:03.000Z"
+    },
+    {
+      "id": "59bhkiu34tf0i1423rc4np9vrk@google.com",
+      "title": "Planning Meeting re: Proposed Plans, Programs, and Corresponding Budgetary Requirements for CY 2027",
+      "category": "planning",
+      "allDay": false,
+      "start": "2026-10-02",
+      "end": "2026-10-02",
+      "startTime": "13:00",
+      "endTime": "17:00",
+      "durationDays": 1,
+      "durationMinutes": 240,
+      "session": "PM",
+      "responsible": [],
+      "output": null,
+      "notes": [
+        "Sanitation Division & Planning and Design Division - Engr. Norman Oliver P. Ragil"
+      ],
+      "status": "CONFIRMED",
+      "updated": "2026-09-25T02:33:13.000Z"
     },
     {
       "id": "5botuoopo4m6b109clk3125r5v@google.com",
