@@ -6,8 +6,8 @@
     "icsUrl": "https://calendar.google.com/calendar/ical/1f439e7aa260c469cb2105d6e8bd9ccd4aa38bf389a48bd06a917bd947a8a43a%40group.calendar.google.com/public/basic.ics",
     "googleUrl": "https://calendar.google.com/calendar/embed?src=1f439e7aa260c469cb2105d6e8bd9ccd4aa38bf389a48bd06a917bd947a8a43a%40group.calendar.google.com&ctz=Asia%2FManila"
   },
-  "generatedAt": "2026-09-28T04:12:12.527Z",
-  "contentHash": "d369d5ef434d9f2a",
+  "generatedAt": "2026-10-01T06:59:49.755Z",
+  "contentHash": "ebbc930417417c0e",
   "range": {
     "start": "2026-09-16",
     "end": "2026-12-18"
@@ -109,7 +109,7 @@
     },
     {
       "id": "6iou3m505kek4ud69ideaejlas@google.com",
-      "title": "SPMS Kick off Meeting",
+      "title": "Strategic Performance and Montoring System (SPMS) Kick off Meeting",
       "category": "kickoff",
       "allDay": true,
       "start": "2026-09-16",
@@ -127,7 +127,7 @@
         "SPMS Cycle and Timeline"
       ],
       "status": "CONFIRMED",
-      "updated": "2026-09-15T03:45:37.000Z"
+      "updated": "2026-10-01T01:12:48.000Z"
     },
     {
       "id": "5pi43id9kojvn4tji3s2l6mrbv@google.com",
