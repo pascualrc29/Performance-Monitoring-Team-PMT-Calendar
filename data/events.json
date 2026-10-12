@@ -6,8 +6,8 @@
     "icsUrl": "https://calendar.google.com/calendar/ical/1f439e7aa260c469cb2105d6e8bd9ccd4aa38bf389a48bd06a917bd947a8a43a%40group.calendar.google.com/public/basic.ics",
     "googleUrl": "https://calendar.google.com/calendar/embed?src=1f439e7aa260c469cb2105d6e8bd9ccd4aa38bf389a48bd06a917bd947a8a43a%40group.calendar.google.com&ctz=Asia%2FManila"
   },
-  "generatedAt": "2026-10-01T06:59:49.755Z",
-  "contentHash": "ebbc930417417c0e",
+  "generatedAt": "2026-10-12T11:32:00.794Z",
+  "contentHash": "cd0312e93216cd1b",
   "range": {
     "start": "2026-09-16",
     "end": "2026-12-18"
@@ -66,7 +66,7 @@
       "description": "Formulating programmes, projects, activities and the budget behind them.",
       "ink": "#ffffff",
       "inkDark": "#ffffff",
-      "count": 9
+      "count": 10
     }
   ],
   "units": [
@@ -238,8 +238,8 @@
       "title": "Initial presentation of proposed plan, programs and budget for 2027 to GM",
       "category": "planning",
       "allDay": false,
-      "start": "2026-10-23",
-      "end": "2026-10-23",
+      "start": "2026-10-26",
+      "end": "2026-10-26",
       "startTime": "08:30",
       "endTime": "15:30",
       "durationDays": 1,
@@ -249,7 +249,25 @@
       "output": null,
       "notes": [],
       "status": "CONFIRMED",
-      "updated": "2026-09-17T10:26:00.000Z"
+      "updated": "2026-10-12T09:47:10.000Z"
+    },
+    {
+      "id": "salgd2ulbmson35peiegpfnaic@google.com",
+      "title": "planning",
+      "category": "planning",
+      "allDay": false,
+      "start": "2026-10-30",
+      "end": "2026-10-30",
+      "startTime": "07:30",
+      "endTime": "16:30",
+      "durationDays": 1,
+      "durationMinutes": 540,
+      "session": null,
+      "responsible": [],
+      "output": null,
+      "notes": [],
+      "status": "CONFIRMED",
+      "updated": "2026-10-12T09:47:59.000Z"
     },
     {
       "id": "6rog5embdt1vl5oaaqjm33od63@google.com",
