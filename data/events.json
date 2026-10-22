@@ -6,8 +6,8 @@
     "icsUrl": "https://calendar.google.com/calendar/ical/1f439e7aa260c469cb2105d6e8bd9ccd4aa38bf389a48bd06a917bd947a8a43a%40group.calendar.google.com/public/basic.ics",
     "googleUrl": "https://calendar.google.com/calendar/embed?src=1f439e7aa260c469cb2105d6e8bd9ccd4aa38bf389a48bd06a917bd947a8a43a%40group.calendar.google.com&ctz=Asia%2FManila"
   },
-  "generatedAt": "2026-10-12T11:32:00.794Z",
-  "contentHash": "cd0312e93216cd1b",
+  "generatedAt": "2026-10-22T06:56:15.669Z",
+  "contentHash": "267db455a3c0575e",
   "range": {
     "start": "2026-09-16",
     "end": "2026-12-18"
@@ -67,6 +67,17 @@
       "ink": "#ffffff",
       "inkDark": "#ffffff",
       "count": 10
+    },
+    {
+      "id": "other",
+      "label": "Other Activities",
+      "short": "Other",
+      "light": "#5b6378",
+      "dark": "#8a93a8",
+      "description": "Activities that sit outside the six main SPMS stages.",
+      "ink": "#ffffff",
+      "inkDark": "#0c1428",
+      "count": 2
     }
   ],
   "units": [
@@ -294,6 +305,24 @@
       "updated": "2026-09-16T05:38:59.000Z"
     },
     {
+      "id": "itqnf1vg5mngquv6ig7go4vo78@google.com",
+      "title": "DMA critical activity review",
+      "category": "other",
+      "allDay": false,
+      "start": "2026-11-04",
+      "end": "2026-11-04",
+      "startTime": "08:00",
+      "endTime": "16:00",
+      "durationDays": 1,
+      "durationMinutes": 480,
+      "session": null,
+      "responsible": [],
+      "output": null,
+      "notes": [],
+      "status": "CONFIRMED",
+      "updated": "2026-10-22T06:41:09.000Z"
+    },
+    {
       "id": "28pja16ljmhhq2nhi6h6m34sic@google.com",
       "title": "Approval",
       "category": "cascading",
@@ -335,6 +364,24 @@
       "notes": [],
       "status": "CONFIRMED",
       "updated": "2026-09-16T05:42:46.000Z"
+    },
+    {
+      "id": "ht70lpr9src25p7unf8u1blm6o@google.com",
+      "title": "DMA Activity",
+      "category": "other",
+      "allDay": false,
+      "start": "2026-11-12",
+      "end": "2026-11-12",
+      "startTime": "08:00",
+      "endTime": "16:00",
+      "durationDays": 1,
+      "durationMinutes": 480,
+      "session": null,
+      "responsible": [],
+      "output": null,
+      "notes": [],
+      "status": "CONFIRMED",
+      "updated": "2026-10-22T06:36:55.000Z"
     },
     {
       "id": "6gori5s3ubmsig69od8lvrpc6k@google.com",
